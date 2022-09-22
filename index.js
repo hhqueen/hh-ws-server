@@ -16,8 +16,8 @@ app.get("/", (req, res) => {
 })
 
 // Route specific middleware
-app.use("/users", require("./controllers/users"))
-app.use("/restaurants", require("./controllers/restaurants"))
+app.use("/users", require("./controllers/api-v1/users"))
+app.use("/restaurants", require("./controllers/api-v1/restaurants"))
 // app.use("/images", require("./controllers/images"))
 // app.use("/tags", require("./controllers/tags"))
 // app.use("/outfits", require("./controllers/outfits"))

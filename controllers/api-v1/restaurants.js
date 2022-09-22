@@ -1,5 +1,5 @@
 const router = require("express").Router()
-const db = require("../models")
+const db = require("../../models")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 
@@ -13,6 +13,17 @@ router.get("/", async (req, res) => {
     }
 })
 
+const yelpAPIsearch = require('../../services/yelpAPI')
+router.get("/yelpSearch", async (req,res)=>{
+    try {
+        console.log(req.body)
+        const results = await yelpAPIsearch(req.body)
+        res.json(results)
+    } catch (error) {
+        console.warn(error)
+    }
+})
+
 router.get("/:id", async (req, res) => {
     try {
         // return one restaurant by mongodb Id via req params
@@ -22,7 +33,5 @@ router.get("/:id", async (req, res) => {
         console.log(error)
     }
 })
-
-
 
 module.exports = router

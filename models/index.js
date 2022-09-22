@@ -19,8 +19,5 @@ module.exports = {
 	// This is where the DB models are exported.
 	User: require("./user"),
     Restaurant: require('./restaurant'),
-	// Outfit: require("./outfit"),
-	// Tag: require("./tag"),
-	// Clothes: require("./clothes"),
-	// Image: require("./images"),
+    Hours: require('./hours')
 }

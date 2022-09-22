@@ -3,11 +3,18 @@ const mongoose = require('mongoose')
 const RestaurantSchema = new mongoose.Schema({
     yelpRestaurantId: {
 		type: String,
+        required: true
 	},
     name: {
 		type: String,
 		required: true
 	},
+    telNumber: {
+        type: String
+    },
+    displayNumber: {
+        type: String
+    },
 	address1: {
 		type: String
 	},
@@ -56,10 +63,14 @@ const RestaurantSchema = new mongoose.Schema({
     cuisines: [{
         type: String
     }],
-	dishes:[{
+	regulars:[{
 		type: mongoose.Schema.Types.ObjectId,
-        ref: "Dish"
+        ref: "User"
 	}],
+    hours: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Hours"   
+    }]
 }, {
 	timestamps: true
 })

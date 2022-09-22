@@ -25,24 +25,16 @@ const UserSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
-		FavoriteRestaurants: [
+		auth:{
+			type:String,
+			required: true
+		},
+		favoriteRestaurants: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
 				ref: "Restaurant",
 			},
 		],
-		outfits: [
-			{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: "Outfit",
-			},
-		],
-		tags: [
-			{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: "Tag",
-			},
-		]
 	},
 	{
 		timestamps: true,

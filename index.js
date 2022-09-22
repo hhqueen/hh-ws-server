@@ -5,7 +5,7 @@ const cors = require("cors")
 
 // app config/middleware
 const app = express()
-const PORT = process.env.PORT || 8000
+const PORT = process.env.PORT || 9000
 app.use(cors())
 app.use(express.json()) //json req.bodies
 // static upload folder for images
@@ -24,5 +24,5 @@ app.use("/restaurants", require("./controllers/restaurants"))
 // app.use("/clothes", require("./controllers/clothes"))
 
 app.listen(PORT, () => {
-	console.log(`is that the PORT ${PORT} that I hear? 🌽`)
+	console.log(`Vegeta: ITS OVER (PORT)${PORT}!?!?`)
 })

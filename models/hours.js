@@ -40,9 +40,8 @@ const HoursSchema = new mongoose.Schema({
         ref: "Restaurant" 
     }
 },{
-  timestamps: true  
-}
-)
+    timestamps: true  
+})
 
 
 module.exports = mongoose.model('Hours', HoursSchema)

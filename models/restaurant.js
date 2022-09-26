@@ -69,7 +69,7 @@ const RestaurantSchema = new mongoose.Schema({
 	}],
     hours: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Hours"   
+        ref: "Hours"
     }]
 }, {
 	timestamps: true

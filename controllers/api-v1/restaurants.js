@@ -7,17 +7,18 @@ router.get("/", async (req, res) => {
     try {
         // get all restaurants
         const allRests = await db.Restaurant.find({})
+        // console.log(allRests)
         res.status(200).json(allRests)
     } catch (error) {
         console.log(error)
     }
 })
 
-const yelpAPIsearch = require('../../services/yelpAPI')
+const yelpAPI = require('../../services/yelpAPI')
 router.get("/yelpSearch", async (req,res)=>{
     try {
         console.log(req.body)
-        const results = await yelpAPIsearch(req.body)
+        const results = await yelpAPI.yelpAPIsearch(req.body)
         res.json(results)
     } catch (error) {
         console.warn(error)

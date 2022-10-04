@@ -1,5 +1,40 @@
 const mongoose = require('mongoose')
 
+const HoursSchema = new mongoose.Schema({
+    day: {
+        type: Number,
+        min: 1,
+        max: 7
+    },
+    hasHH: {
+        type: Boolean
+    },
+    start1: {
+        type: Number,
+        min: -1,
+        max: 24
+    },
+    end1: {
+        type: Number,
+        min: -1,
+        max: 24
+    },
+    start2: {
+        type: Number,
+        min: -1,
+        max: 24
+    },
+    end2: {
+        type: Number,
+        min: -1,
+        max: 24
+    },
+}, {
+    timestamps: true
+})
+
+
+
 const RestaurantSchema = new mongoose.Schema({
     yelpRestaurantId: {
 		type: String,
@@ -63,14 +98,11 @@ const RestaurantSchema = new mongoose.Schema({
     cuisines: [{
         type: String
     }],
+    hours: [HoursSchema],
 	regulars:[{
 		type: mongoose.Schema.Types.ObjectId,
         ref: "User"
-	}],
-    hours: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Hours"
-    }]
+	}]
 }, {
 	timestamps: true
 })

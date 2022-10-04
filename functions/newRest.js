@@ -1,5 +1,4 @@
 const db = require('../models')
-const { forEach } = require('../seeding/seedRestData.js')
 const restData = require('../seeding/seedRestData.js')
 const yelpAPI = require('../services/yelpAPI')
 
@@ -18,10 +17,28 @@ const newRest = async () => {
 // searches by yelp Id and adds to db
 const newRestByID = async () => {
     try {
-            const busId = "pm1SGfjnSDIDw-1W1XbCSQ"
+            const busId = "fIIgMDLnySfSodKMiuDwfA"
             const yelpData = await yelpAPI.returnYelpBusById(busId)
             const flatRestData = convertYelpRest(yelpData)
-            await db.Restaurant.create(flatRestData)
+            const newRest = await db.Restaurant.create(flatRestData)
+            
+            const newHours = [
+                {day:1, hasHH:true,start1:15,end1:18,start2:-1,end2:-1},
+                {day:2, hasHH:true,start1:15,end1:18,start2:-1,end2:-1},
+                {day:3, hasHH:true,start1:15,end1:18,start2:-1,end2:-1},
+                {day:4, hasHH:true,start1:15,end1:18,start2:-1,end2:-1},
+                {day:5, hasHH:true,start1:15,end1:18,start2:-1,end2:-1},
+                {day:6, hasHH:true,start1:15,end1:18,start2:-1,end2:-1},
+                {day:7, hasHH:true,start1:15,end1:18,start2:-1,end2:-1},
+            ]
+
+            newHours.forEach((hhHour) => {
+                newRest.hours.push(hhHour)               
+            })
+
+            await newRest.save()
+            console.log(newRest)
+
     } catch (error) {
         console.log(error)
     }
@@ -49,8 +66,8 @@ const convertYelpRest = (yelpData) => {
         image_url: yelpData.image_url,
         hasDrinks: true,
         hasFood: true,
-        dogFriendly: true,
-        hasPatio: true,
+        dogFriendly: false,
+        hasPatio: false,
         cuisines: [],
     }
 

@@ -17,19 +17,19 @@ const newRest = async () => {
 // searches by yelp Id and adds to db
 const newRestByID = async () => {
     try {
-            const busId = "fIIgMDLnySfSodKMiuDwfA"
+            const busId = "pm1SGfjnSDIDw-1W1XbCSQ"
             const yelpData = await yelpAPI.returnYelpBusById(busId)
             const flatRestData = convertYelpRest(yelpData)
             const newRest = await db.Restaurant.create(flatRestData)
             
             const newHours = [
-                {day:1, hasHH:true,start1:15,end1:18,start2:-1,end2:-1},
+                {day:0, hasHH:true,start1:15,end1:18,start2:-1,end2:-1},
+                {day:1, hasHH:false,start1:-1,end1:-1,start2:-1,end2:-1},
                 {day:2, hasHH:true,start1:15,end1:18,start2:-1,end2:-1},
                 {day:3, hasHH:true,start1:15,end1:18,start2:-1,end2:-1},
                 {day:4, hasHH:true,start1:15,end1:18,start2:-1,end2:-1},
                 {day:5, hasHH:true,start1:15,end1:18,start2:-1,end2:-1},
                 {day:6, hasHH:true,start1:15,end1:18,start2:-1,end2:-1},
-                {day:7, hasHH:true,start1:15,end1:18,start2:-1,end2:-1},
             ]
 
             newHours.forEach((hhHour) => {

@@ -3,8 +3,8 @@ const mongoose = require('mongoose')
 const HoursSchema = new mongoose.Schema({
     day: {
         type: Number,
-        min: 1,
-        max: 7
+        min: 0,
+        max: 6
     },
     hasHH: {
         type: Boolean

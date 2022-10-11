@@ -6,7 +6,7 @@ const HoursSchema = new mongoose.Schema({
         min: 0,
         max: 6
     },
-    hasHH: {
+    hasHH1: {
         type: Boolean
     },
     start1: {
@@ -19,6 +19,12 @@ const HoursSchema = new mongoose.Schema({
         min: -1,
         max: 24
     },
+    end1close:{
+        type: Boolean
+    },
+    hasHH2: {
+        type: Boolean
+    },
     start2: {
         type: Number,
         min: -1,
@@ -29,11 +35,12 @@ const HoursSchema = new mongoose.Schema({
         min: -1,
         max: 24
     },
+    end2close:{
+        type: Boolean
+    },
 }, {
     timestamps: true
 })
-
-
 
 const RestaurantSchema = new mongoose.Schema({
     yelpRestaurantId: {
@@ -102,7 +109,11 @@ const RestaurantSchema = new mongoose.Schema({
 	regulars:[{
 		type: mongoose.Schema.Types.ObjectId,
         ref: "User"
-	}]
+	}],
+    menu: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Menu" 
+    }
 }, {
 	timestamps: true
 })

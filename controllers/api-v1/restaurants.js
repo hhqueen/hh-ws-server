@@ -7,7 +7,8 @@ router.get("/", async (req, res) => {
     try {
         // get all restaurants
         const allRests = await db.Restaurant.find({})
-        // console.log(allRests)
+        .populate("menu")
+        console.log(allRests)
         res.status(200).json(allRests)
     } catch (error) {
         console.log(error)
@@ -29,6 +30,7 @@ router.get("/:id", async (req, res) => {
     try {
         // return one restaurant by mongodb Id via req params
         const oneRest = await db.Restaurant.findById(req.params.id)
+        .populate("menu")
         res.status(200).json(oneRest)
     } catch (error) {
         console.log(error)

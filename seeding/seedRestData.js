@@ -3,13 +3,13 @@ module.exports = [
         id: "uZqBQCiyZC3owwct3CUJkA",
         // Angelina's Irvine
         hours: [
-            {day:0, hasHH:true,start1:15,end1:18,end1close:false, start2:-1,end2:-1,end2close:false},
-            {day:1, hasHH:false,start1:-1,end1:-1,end1close:false,start2:-1,end2:-1,end2close:false},
-            {day:2, hasHH:true,start1:15,end1:18,end1close:false,start2:-1,end2:-1,end2close:false},
-            {day:3, hasHH:true,start1:15,end1:18,end1close:false,start2:-1,end2:-1,end2close:false},
-            {day:4, hasHH:true,start1:15,end1:18,end1close:false,start2:-1,end2:-1,end2close:false},
-            {day:5, hasHH:true,start1:15,end1:18,end1close:false,start2:-1,end2:-1,end2close:false},
-            {day:6, hasHH:true,start1:15,end1:18,end1close:false,start2:-1,end2:-1,end2close:false}
+            {day:0, hasHH1:true,start1:16.5,end1:18.5,end1close:false, start2:-1,end2:-1,end2close:false},
+            {day:1, hasHH1:true,start1:16.5,end1:18.5,end1close:false,start2:-1,end2:-1,end2close:false},
+            {day:2, hasHH1:true,start1:16.5,end1:18.5,end1close:false,start2:-1,end2:-1,end2close:false},
+            {day:3, hasHH1:true,start1:16.5,end1:18.5,end1close:false,start2:-1,end2:-1,end2close:false},
+            {day:4, hasHH1:true,start1:15,end1:18,end1close:false,start2:-1,end2:-1,end2close:false},
+            {day:5, hasHH1:true,start1:15,end1:18,end1close:false,start2:-1,end2:-1,end2close:false},
+            {day:6, hasHH1:true,start1:15,end1:18,end1close:false,start2:-1,end2:-1,end2close:false}
         ],
         newMenu: {
             restaurantName: null,
@@ -19,51 +19,6 @@ module.exports = [
         },
         foodMenu:[],
         drinkMenu:[]
-        // alias: "2145-eats-costa-mesa",
-        // name: "2145 Eats",
-        // image_url: "https://s3-media3.fl.yelpcdn.com/bphoto/uINvUcyFMUiTNP5M39MDbQ/o.jpg",
-        // is_closed: false,
-        // url: "https://www.yelp.com/biz/2145-eats-costa-mesa?adjust_creative=IghRmfmqyjcFPRDDuxHr6w&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=IghRmfmqyjcFPRDDuxHr6w",
-        // review_count: 677,
-        // categories: [
-        //     {
-        //         alias: "pizza",
-        //         title: "Pizza"
-        //     },
-        //     {
-        //         alias: "tapasmallplates",
-        //         title: "Tapas/Small Plates"
-        //     },
-        //     {
-        //         alias: "venues",
-        //         title: "Venues & Event Spaces"
-        //     }
-        // ],
-        // rating: 4.5,
-        // coordinates: {
-        //     latitude: 33.6521126358452,
-        //     longitude: -117.932446176434
-        // },
-        // transactions: [
-        //     "delivery"
-        // ],
-        // price: "$$",
-        // location: {
-        //     address1: "2145 Placentia Ave",
-        //     address2: null,
-        //     address3: "",
-        //     city: "Costa Mesa",
-        //     zip_code: "92627",
-        //     country: "US",
-        //     state: "CA",
-        //     display_address: [
-        //         "2145 Placentia Ave",
-        //         "Costa Mesa, CA 92627"
-        //     ]
-        // },
-        // phone: "+19498735853",
-        // display_phone: "(949) 873-5853",
-        // distance: 2496.6153648289214
     },
     {
         id: "DzUM7WHOCcV5BGUndd-ciA",

@@ -10,21 +10,25 @@ const MenuItemSchema = new mongoose.Schema({
     type: {
         type: String
     },
-    isPrice: {
-        type: Boolean
+    // isPrice: {
+    //     type: Boolean
+    // },
+    specialTypeId:{
+        type: Number
+        // 1 = price, 2 = percentDiscount, 3 = dollarsOff
     },
     price: {
         type: Number
     },
-    isPercentDiscount: {
-        type: Boolean
-    },
+    // isPercentDiscount: {
+    //     type: Boolean
+    // },
     percentDiscount: {
         type: Number
     },
-    isDollarsOff: {
-        type: Boolean
-    },
+    // isDollarsOff: {
+    //     type: Boolean
+    // },
     dollarsOff: {
         type: Number
     }
@@ -44,9 +48,15 @@ const HHMenuSchema = new mongoose.Schema({
     hasFoodSpecials: {
         type: Boolean
     },
+    foodSpecialsDescription:{
+        type: String
+    },
     foodMenu: [MenuItemSchema],
     hasDrinkSpecials: {
         type: Boolean
+    },
+    drinkSpecialsDescription:{
+        type: String
     },
     drinkMenu: [MenuItemSchema],
     restaurant: [{

@@ -29,6 +29,7 @@ const UserSchema = new mongoose.Schema(
 			type:String,
 			required: true
 		},
+		//AUTH: User or Admin ONLY
 		favoriteRestaurants: [
 			{
 				type: mongoose.Schema.Types.ObjectId,

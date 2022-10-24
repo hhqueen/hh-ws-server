@@ -8,11 +8,11 @@ router.post("/signup", async (req, res) => {
         let emailError = ""
         let usernameError=""
         // check if the email exists already
-		const findUserEmail = await db.User.findOne({email: req.body.email.lower()})
+		const findUserEmail = await db.User.findOne({email: req.body.email.toLowerCase()})
 		if (findUserEmail) {emailError = "E-mail"}
 
         // check if the username exists already
-        const findUserUsername = await db.User.findOne({userName: req.body.userName.lower()})
+        const findUserUsername = await db.User.findOne({userName: req.body.userName.toLowerCase()})
         if (findUserUsername) {usernameError= "Username"}
         
         // returns error message and disallows registering twice
@@ -32,8 +32,8 @@ router.post("/signup", async (req, res) => {
 		const newUser = new db.User({
 			firstName: req.body.firstName,
 			lastName: req.body.lastName,
-			userName: req.body.userName.lower(),
-			email: req.body.email.lower(),
+			userName: req.body.userName.toLowerCase(),
+			email: req.body.email.toLowerCase(),
             auth: "User",
 			password: hashedPassword
 		})
@@ -93,7 +93,7 @@ router.post("/login", async (req, res) => {
 			lastName: foundUser.lastName,
 			userName: foundUser.userName,
 			email: foundUser.email,
-            auth: newUser.auth,
+            auth: foundUser.auth,
 			id: foundUser.id
 		}
 		// sign the jwt and send it back

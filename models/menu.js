@@ -17,21 +17,21 @@ const MenuItemSchema = new mongoose.Schema({
         type: Number
         // 1 = price, 2 = percentDiscount, 3 = dollarsOff
     },
-    price: {
+    value: {
         type: Number
     },
     // isPercentDiscount: {
     //     type: Boolean
     // },
-    percentDiscount: {
-        type: Number
-    },
+    // percentDiscount: {
+    //     type: Number
+    // },
     // isDollarsOff: {
     //     type: Boolean
     // },
-    dollarsOff: {
-        type: Number
-    }
+    // dollarsOff: {
+    //     type: Number
+    // }
 }, {
     timestamps: true
 })

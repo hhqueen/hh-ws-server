@@ -72,7 +72,7 @@ router.post("/login", async (req, res) => {
 		// all the data will come in on the req.body
 		// try to find the user in the database
 		const foundUser = await db.User.findOne({
-			email: req.body.email
+			email: req.body.email.toLowerCase()
 		})
 		const noLoginMessage = 'Incorrect email or password.'
 

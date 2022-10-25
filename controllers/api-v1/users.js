@@ -9,19 +9,22 @@ router.post("/signup", async (req, res) => {
         let usernameError=""
         // check if the email exists already
 		const findUserEmail = await db.User.findOne({email: req.body.email.toLowerCase()})
-		if (findUserEmail) {emailError = "E-mail"}
+		if (findUserEmail) {
+			// emailError = "E-mail"
+			res.status(400).json({msg:"Email already exists, please try again."})
+		}
 
         // check if the username exists already
-        const findUserUsername = await db.User.findOne({userName: req.body.userName.toLowerCase()})
-        if (findUserUsername) {usernameError= "Username"}
+        // const findUserUsername = await db.User.findOne({userName: req.body.userName.toLowerCase()})
+        // if (findUserUsername) {usernameError= "Username"}
         
         // returns error message and disallows registering twice
-        let email_username_andString = ""
-        if (findUserEmail || findUserUsername) {
-            if (findUserEmail && findUserUsername) {email_username_andString = " and "}
-            msg = `${emailError}${email_username_andString}${usernameError} already exists, please try again.`
-            return res.status(400).json({msg})
-        }
+        // let email_username_andString = ""
+        // if (findUserEmail || findUserUsername) {
+        //     if (findUserEmail && findUserUsername) {email_username_andString = " and "}
+        //     msg = `${emailError}${email_username_andString}${usernameError} already exists, please try again.`
+        //     return res.status(400).json({msg})
+        // }
 
 		// hash the user's password
 		const password = req.body.password

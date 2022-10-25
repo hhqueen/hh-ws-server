@@ -33,8 +33,8 @@ router.post("/signup", async (req, res) => {
 
 		// create a new user with the hashed password
 		const newUser = new db.User({
-			firstName: req.body.firstName,
-			lastName: req.body.lastName,
+			firstName: req.body.firstName.toLowerCase(),
+			lastName: req.body.lastName.toLowerCase(),
 			userName: req.body.userName.toLowerCase(),
 			email: req.body.email.toLowerCase(),
             auth: "User",
@@ -53,7 +53,7 @@ router.post("/signup", async (req, res) => {
 			id: newUser.id
 		}
 		// sign the token and send it back
-		const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' }) // expires in one day
+		const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '30d' }) // expires in one day
 		res.json({ token })
 	} catch (err) {
 		console.warn(err)
@@ -100,7 +100,7 @@ router.post("/login", async (req, res) => {
 			id: foundUser.id
 		}
 		// sign the jwt and send it back
-		const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' })
+		const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '30d' })
 		res.json({ token })
 	} catch (err) {
 		// don't forget to handle your errors

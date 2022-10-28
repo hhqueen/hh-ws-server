@@ -12,17 +12,19 @@ router.get("/", async (req, res) => {
         res.status(200).json(allRests)
     } catch (error) {
         console.log(error)
+        res.status(400).json(error)
     }
 })
 
 const yelpAPI = require('../../services/yelpAPI')
 router.get("/yelpSearch", async (req,res)=>{
     try {
-        console.log(req.body)
+        // console.log(req.body)
         const results = await yelpAPI.yelpAPIsearch(req.body)
-        res.json(results)
+        res.status(200).json(results)
     } catch (error) {
         console.warn(error)
+        res.status(400).json(error)
     }
 })
 
@@ -34,6 +36,7 @@ router.get("/:id", async (req, res) => {
         res.status(200).json(oneRest)
     } catch (error) {
         console.log(error)
+        res.status(400).json(error)
     }
 })
 

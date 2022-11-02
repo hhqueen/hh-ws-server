@@ -1,1 +1,0 @@
-await addMainMenu(createdRest, req.body.

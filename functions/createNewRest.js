@@ -76,9 +76,9 @@ async function addMainMenu(restaurantObject, menuObj) {
         restaurantName,
         isChain,
         hasFoodSpecials,
-        foodSpecialsDescriptions: menuObj.foodSpecialsDescriptions,
+        foodSpecialsDescription: foodSpecialsDescriptions,
         hasDrinkSpecials,
-        drinkSpecialsDescriptions: menuObj.drinkSpecialsDescriptions,
+        drinkSpecialsDescription: drinkSpecialsDescriptions,
         restaurantName:restaurantObject.name,
     })
     restaurantObject.menu = newMenu

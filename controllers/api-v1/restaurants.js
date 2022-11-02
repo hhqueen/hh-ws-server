@@ -63,26 +63,12 @@ router.post("/newRestaurant", async (req,res) => {
     try {       
         const createdRest = await createNewRest(req.body.restaurantData)
         // console.log(createdRest)
+        console.log("req.body.restaurantData",req.body.restaurantData)
         await addHours(createdRest, req.body.restaurantData.hours)
         const createdMainMenu = await addMainMenu(createdRest, req.body.restaurantData.menu)
         await addFoodMenu(createdMainMenu,req.body.restaurantData.menu.foodMenu)
         await addDrinkMenu(createdMainMenu,req.body.restaurantData.menu.drinkMenu)
-        // const newRest = await db.Restaurant.create({
-        //     yelpRestaurantId, name,
-        //     telNumber,
-        //     cuisines,
-        //     displayNumber,
-        //     address1,
-        //     address2,
-        //     address3,
-        //     city,
-        //     zip_code,
-        //     country,
-        //     longitude,
-        //     latitude,
-        //     image_url
-        // })
-        // console.log(newRest)
+        await addCusine(createdRest, req.body.restaurantData.cuisines)
         res.status(200).json({msg:"yep"})
     } catch (error) {
         console.log(error)

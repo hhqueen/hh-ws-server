@@ -89,7 +89,7 @@ async function addMainMenu(restaurantObject, menuObj) {
 }
 
 async function addFoodMenu(mainMenuObj, FoodMenuArr) {
-    console.log("hits Food Menu Function")
+    // console.log("hits Food Menu Function")
     FoodMenuArr.forEach((item)=>{
         mainMenuObj.foodMenu.push(item)
     })
@@ -97,15 +97,20 @@ async function addFoodMenu(mainMenuObj, FoodMenuArr) {
 }
 
 async function addDrinkMenu(mainMenuObj, DrinkMenuArr) {
-    console.log("hits Drink Menu Function")
+    // console.log("hits Drink Menu Function")
     DrinkMenuArr.forEach((item)=>{
         mainMenuObj.drinkMenu.push(item)
     })
     return await mainMenuObj.save()
 }
 
-async function addCusine() {
-
+async function addCusine(restaurantObject, cuisineArr) {
+    console.log(restaurantObject)
+    cuisineArr.forEach((cuisine)=>{
+        restaurantObject.cuisines.push(cuisine.title)
+    })
+    console.log(restaurantObject.cuisines)
+    return await restaurantObject.save()
 }
 
 module.exports = {

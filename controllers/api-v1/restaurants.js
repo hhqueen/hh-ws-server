@@ -21,7 +21,7 @@ router.get("/yelpSearch", async (req,res)=>{
     // ?search=:term&lat=:lat&long=:long&address=:address
     try {
         // console.log(req.body)
-        console.log(req.query)
+        // console.log(req.query)
         const reqbody = {
             searchTerm: req.query.search,
             coordinates:{
@@ -32,10 +32,10 @@ router.get("/yelpSearch", async (req,res)=>{
         }
         const results = await yelpAPI.yelpAPIsearch(reqbody)
         console.log(results)
-        res.status(200).json({results,reqbody})
+        res.status(200).json({results})
     } catch (error) {
         console.warn(error)
-        res.status(400).json({error,reqbody})
+        res.status(400).json({error})
     }
 })
 

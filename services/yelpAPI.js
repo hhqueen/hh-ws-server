@@ -9,7 +9,7 @@ const yelpAPIsearch = async ({searchTerm, coordinates, location}) => {
             }
         }
 
-        if (location == "Current Location") {
+        if (location === "Current Location") {
             yelpResponse = await axios
                 .get(`https://api.yelp.com/v3/businesses/search?term=${searchTerm}&latitude=${coordinates.lat}&longitude=${coordinates.long}`, header)
         } else {
@@ -22,6 +22,7 @@ const yelpAPIsearch = async ({searchTerm, coordinates, location}) => {
         return yelpResponse.data
     } catch (error) {
         console.log(error)
+        return error
     }
 }
 

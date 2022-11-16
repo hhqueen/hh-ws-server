@@ -9,9 +9,9 @@ const yelpAPIsearch = async ({searchTerm, coordinates, location}) => {
             }
         }
         
-        if (location.contains("%20")) {
-            location = location.replace("%20", " ")
-        }
+        // if (location.contains("%20")) {
+        //     location = location.replace("%20", " ")
+        // }
 
         if (location === "Current Location") {
             yelpResponse = await axios

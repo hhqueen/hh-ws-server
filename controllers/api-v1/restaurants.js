@@ -32,10 +32,10 @@ router.get("/yelpSearch", async (req,res)=>{
         }
         const results = await yelpAPI.yelpAPIsearch(reqbody)
         console.log(results)
-        res.status(200).json(results)
+        res.status(200).json({results,reqbody})
     } catch (error) {
         console.warn(error)
-        res.status(400).json(error)
+        res.status(400).json({error,reqbody})
     }
 })
 

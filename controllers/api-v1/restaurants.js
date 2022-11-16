@@ -31,6 +31,7 @@ router.get("/yelpSearch", async (req,res)=>{
             location:req.query.address
         }
         const results = await yelpAPI.yelpAPIsearch(reqbody)
+        console.log(results)
         res.status(200).json(results)
     } catch (error) {
         console.warn(error)

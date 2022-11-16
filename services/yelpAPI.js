@@ -8,6 +8,10 @@ const yelpAPIsearch = async ({searchTerm, coordinates, location}) => {
                 "Authorization": `Bearer ${process.env.YELP_API_KEY}`,
             }
         }
+        
+        if (location.contains("%20")) {
+            location = location.replace("%20", " ")
+        }
 
         if (location === "Current Location") {
             yelpResponse = await axios

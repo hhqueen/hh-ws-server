@@ -28,7 +28,7 @@ router.get("/yelpSearch", async (req,res)=>{
                 lat:req.query.lat,
                 long:req.query.long
             },
-            location:req.query.address
+            location:req.query.address.replace("%20", " ")
         }
         const results = await yelpAPI.yelpAPIsearch(reqbody)
         console.log(results)

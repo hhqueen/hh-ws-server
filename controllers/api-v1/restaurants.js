@@ -63,16 +63,16 @@ router.post("/newRestaurant", async (req,res) => {
     try {       
         const createdRest = await createNewRest(req.body.restaurantData)
         // console.log(createdRest)
-        console.log("req.body.restaurantData",req.body.restaurantData)
+        // console.log("req.body.restaurantData",req.body.restaurantData)
         await addHours(createdRest, req.body.restaurantData.hours)
         const createdMainMenu = await addMainMenu(createdRest, req.body.restaurantData.menu)
         await addFoodMenu(createdMainMenu,req.body.restaurantData.menu.foodMenu)
         await addDrinkMenu(createdMainMenu,req.body.restaurantData.menu.drinkMenu)
         await addCusine(createdRest, req.body.restaurantData.cuisines)
-        res.status(200).json({msg:"yep"})
+        res.status(200).json({msg:`${createdRest.name} was successfully created`, id:createdRest._id})
     } catch (error) {
         console.log(error)
-        res.status(400).json(error)
+        res.status(400).json({msg:`There was an error!`,error})
     }
 })
 

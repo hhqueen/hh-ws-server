@@ -2,6 +2,8 @@ const router = require("express").Router()
 const db = require("../../models")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
+const mailChimp = require("../../services/mailChimp")
+const axios = require("axios")
 
 router.post("/signup", async (req, res) => {
     try {
@@ -125,5 +127,54 @@ router.put("/profile/:userName", async (req, res) => {
     }
 })
 
+
+router.get("/mcGet", async (req,res) => {
+	try {
+		const getMailChimpResponse = await mailChimp.GetListInfo()
+		res.send(getMailChimpResponse)
+	} catch (error) {
+		console.warn(error)
+	}
+})
+
+router.post("/mcAddOneUser", async (req,res) => {
+	try {
+		const data = req.body
+		const getMailChimpResponse = await mailChimp.AddOneUser(data.email_address,data.status)
+		res.send(getMailChimpResponse)
+	} catch (error) {
+		console.warn(error)
+	}
+})
+
+router.put("/mcAddUpdateOneUser", async (req,res) => {
+	try {
+		// res.send("/mcAddUpdateOneUser ROUTE")
+		// return
+		console.log("mcAddUpdateOneUser")
+		const data = req.body
+		const getMailChimpResponse = await mailChimp.AddUpdateOneUser(data)
+		res.send(getMailChimpResponse)
+	} catch (error) {
+		console.warn(error)
+	}
+})
+
+router.post("/resetPassword", async (req,res) => {
+	try {
+		// WIP
+		const unique_email_id = req.body.unique_email_id
+		// res.send("/mcAddUpdateOneUser ROUTE")
+		// return
+		// console.log("mcAddUpdateOneUser")
+		// const data = req.body
+		// const getMailChimpResponse = await mailChimp.AddUpdateOneUser(data)
+		const response = await axios.post(`https://us21.api.mailchimp.com/3.0/automations/a54abfc080/emails/75688e956c/queue&API_KEY=${process.env.MAILCHIMP_API_KEY}`, {unique_email_id})
+		res.send(response)
+	} catch (error) {
+		console.warn(error)
+		res.send(error)
+	}
+})
 
 module.exports = router

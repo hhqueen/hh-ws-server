@@ -54,8 +54,11 @@ async function createNewRest(restaurantData) {
 }
 
 async function addHours(restaurantObject, HoursArr) {
-    HoursArr.forEach((hhHour) => {
-        restaurantObject.hours.push(hhHour)
+    HoursArr.forEach(async (hhHour) => {
+        const newHour = await db.Hour.create(hhHour)
+        restaurantObject.hours.push(newHour)
+        newHour.restaurant.push(restaurantObject._id)
+        await newHour.save()
     })
     await restaurantObject.save()
     return 
@@ -77,13 +80,13 @@ async function addMainMenu(restaurantObject, menuObj) {
     newMenu.restaurant.push(restaurantObject)
     await restaurantObject.save()
     await newMenu.save()
-    if (menuObj.foodMenuImg.imgUrl) {
+    if (menuObj.foodMenuImg !== null) {
         const foundFoodMenuImg = await db.Image.findById(menuObj.foodMenuImg._id)
         foundFoodMenuImg.menu = newMenu._id
         await foundFoodMenuImg.save()
     }
 
-    if (menuObj.drinkMenuImg.imgUrl) {
+    if (menuObj.drinkMenuImg !== null) {
         const foundDrinkMenuImg = await db.Image.findById(menuObj.foodMenuImg._id)
         foundDrinkMenuImg.menu = newMenu._id
         await foundDrinkMenuImg.save()

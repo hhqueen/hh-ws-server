@@ -20,5 +20,6 @@ module.exports = {
 	User: require("./user"),
     Restaurant: require('./restaurant'),
 	Menu: require('./menu'),
-	Image: require('./image')
+	Image: require('./image'),
+	Hour: require('./hour')
 }

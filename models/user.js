@@ -25,7 +25,11 @@ const UserSchema = new mongoose.Schema(
 			required: true,
 			default: true
 		},
-		profileImg: [{
+		profileImg: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Image",
+		},
+		uploadedImgs: [{
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Image",
 		}],

@@ -62,6 +62,7 @@ const {
 
 router.post("/newRestaurant", async (req,res) => {
     try {       
+        console.log("reqbody server side:",req.body)
         const createdRest = await createNewRest(req.body.restaurantData)
         // console.log(createdRest)
         // console.log("req.body.restaurantData",req.body.restaurantData)

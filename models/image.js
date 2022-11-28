@@ -21,7 +21,7 @@ const ImageSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User" 
     },
-    restaurant: {
+    menu: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Menu" 
     }

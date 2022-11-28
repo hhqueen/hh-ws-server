@@ -64,29 +64,30 @@ async function addHours(restaurantObject, HoursArr) {
 async function addMainMenu(restaurantObject, menuObj) {
     
     // console.log(restaurantObject)
-    // console.log(menuObj)
-    const {
-        restaurantName,
-        isChain,
-        hasFoodSpecials,
-        foodSpecialsDescriptions,
-        hasDrinkSpecials,
-        drinkSpecialsDescriptions
-    } = menuObj
-       
+    console.log("menuObj:",menuObj)      
     const newMenu = await db.Menu.create({
-        restaurantName,
-        isChain,
-        hasFoodSpecials,
-        foodSpecialsDescription: foodSpecialsDescriptions,
-        hasDrinkSpecials,
-        drinkSpecialsDescription: drinkSpecialsDescriptions,
         restaurantName:restaurantObject.name,
+        isChain: menuObj.isChain,
+        hasFoodSpecials: menuObj.hasFoodSpecials,
+        foodMenuImg: menuObj.foodMenuImg,
+        hasDrinkSpecials: menuObj.hasDrinkSpecials,
+        drinkMenuImg: menuObj.drinkMenuImg
     })
     restaurantObject.menu = newMenu
     newMenu.restaurant.push(restaurantObject)
     await restaurantObject.save()
     await newMenu.save()
+    if (menuObj.foodMenuImg.imgUrl) {
+        const foundFoodMenuImg = await db.Image.findById(menuObj.foodMenuImg._id)
+        foundFoodMenuImg.menu = newMenu._id
+        await foundFoodMenuImg.save()
+    }
+
+    if (menuObj.drinkMenuImg.imgUrl) {
+        const foundDrinkMenuImg = await db.Image.findById(menuObj.foodMenuImg._id)
+        foundDrinkMenuImg.menu = newMenu._id
+        await foundDrinkMenuImg.save()
+    }
     return newMenu
 }
 

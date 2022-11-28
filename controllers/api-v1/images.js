@@ -6,7 +6,7 @@ const multer = require("multer")
 const { unlinkSync } = require('fs')
 
 // setting up the multer engine
-const uploads = multer({dest: "uploads/"})
+const uploads = multer({dest: "/tmp/uploads"})
 
 router.post("/upload", uploads.single('image'), async (req,res) => {
     try {        

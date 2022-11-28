@@ -20,20 +20,19 @@ const UserSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
-		profileImg: {
-			type: String
-		},
+		profileImg: [{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Image",
+		}],
 		auth:{
 			type:String,
 			required: true
 		},
-		//AUTH: User or Admin ONLY
-		favoriteRestaurants: [
-			{
+		//AUTH: User, Mod (Moderator), or Admin ONLY
+		favoriteRestaurants: [{
 				type: mongoose.Schema.Types.ObjectId,
 				ref: "Restaurant",
-			},
-		],
+		}],
 	},
 	{
 		timestamps: true,

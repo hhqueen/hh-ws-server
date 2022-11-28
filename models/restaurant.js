@@ -102,6 +102,11 @@ const RestaurantSchema = new mongoose.Schema({
     hasRoofTop: {
         type: Boolean
     },
+    isActive:{
+        type: Boolean,
+        required: true,
+        default: true
+    },
     cuisines: [{
         type: String
     }],

@@ -68,10 +68,10 @@ const RestaurantSchema = new mongoose.Schema({
     cuisines: [{
         type: String
     }],
-    hours: [{
+    hourSet: {
 		type: mongoose.Schema.Types.ObjectId,
         ref: "Hour"
-	}],
+	},
 	regulars:[{
 		type: mongoose.Schema.Types.ObjectId,
         ref: "User"

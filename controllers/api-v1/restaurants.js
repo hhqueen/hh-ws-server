@@ -7,7 +7,7 @@ router.get("/", async (req, res) => {
     try {
         // get all restaurants
         const allRests = await db.Restaurant.find({})
-        .populate("hours")
+        .populate("hourSet")
         console.log(allRests)
         res.status(200).json(allRests)
     } catch (error) {
@@ -48,7 +48,7 @@ router.get("/:id", async (req, res) => {
             populate:[
                 {path:"drinkMenuImg"}, {path:"foodMenuImg"}
             ]},{
-            path:"hours"
+            path:"hourSet"
         }])
         res.status(200).json(oneRest)
     } catch (error) {
@@ -67,17 +67,25 @@ const {
 } = require('../../functions/createNewRest.js')
 
 router.post("/newRestaurant", async (req,res) => {
-    try {       
+    try {
+        const findRestByYelpId = await db.Restaurant.findOne({
+            yelpRestaurantId: req.body.restaurantData.yelpRestaurantId
+        })
+        console.log("findRestByYelpId:",findRestByYelpId)
+        if (findRestByYelpId) {
+            res.status(200).json({msg:`${req.body.restaurantData.name} already exists!`, id:findRestByYelpId._id})
+            return
+        }
         console.log("reqbody server side:",req.body)
         const createdRest = await createNewRest(req.body.restaurantData)
         // console.log(createdRest)
         // console.log("req.body.restaurantData",req.body.restaurantData)
-        await addHours(createdRest, req.body.restaurantData.hours)
+        await addHours(createdRest, req.body.restaurantData.hourSet)
         const createdMainMenu = await addMainMenu(createdRest, req.body.restaurantData.menu)
         await addFoodMenu(createdMainMenu,req.body.restaurantData.menu.foodMenu)
         await addDrinkMenu(createdMainMenu,req.body.restaurantData.menu.drinkMenu)
         await addCusine(createdRest, req.body.restaurantData.cuisines)
-        res.status(200).json({msg:`${createdRest.name} was successfully created`, id:createdRest._id})
+        res.status(201).json({msg:`${createdRest.name} was successfully created`, id:createdRest._id})
     } catch (error) {
         console.log(error)
         res.status(400).json({msg:`There was an error!`,error})

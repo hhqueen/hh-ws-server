@@ -53,19 +53,20 @@ async function createNewRest(restaurantData) {
     return newRestResponse
 }
 
-async function addHours(restaurantObject, HoursArr) {
-    HoursArr.forEach(async (hhHour) => {
-        const newHour = await db.Hour.create(hhHour)
-        restaurantObject.hours.push(newHour)
-        newHour.restaurant.push(restaurantObject._id)
-        await newHour.save()
+async function addHours(restaurantObject, hourSet) {
+    const newHourSet = await db.Hour.create({
+        originalRestaurant:restaurantObject._id,
+        description:"",
+        hours: hourSet.hours,
+        restaurants:[restaurantObject._id]
     })
+    restaurantObject.hourSet = newHourSet
     await restaurantObject.save()
     return 
+    
 }
 
 async function addMainMenu(restaurantObject, menuObj) {
-    
     // console.log(restaurantObject)
     console.log("menuObj:",menuObj)      
     const newMenu = await db.Menu.create({

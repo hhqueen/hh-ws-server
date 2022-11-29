@@ -37,8 +37,21 @@ const HourSchema = new mongoose.Schema({
     },
     end2close:{
         type: Boolean
+    }
+}, {
+    timestamps: true
+})
+
+const HourSetSchema = new mongoose.Schema({
+    originalRestaurant:{
+		type: mongoose.Schema.Types.ObjectId,
+        ref: "Restaurant"
+	},
+    description:{
+        type: String
     },
-    restaurant:[{
+    hours:[HourSchema],
+    restaurants:[{
 		type: mongoose.Schema.Types.ObjectId,
         ref: "Restaurant"
 	}]
@@ -46,4 +59,4 @@ const HourSchema = new mongoose.Schema({
     timestamps: true
 })
 
-module.exports = mongoose.model("Hour", HourSchema)
+module.exports = mongoose.model("Hour", HourSetSchema)

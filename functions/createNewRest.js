@@ -2,7 +2,7 @@ const db = require("../models")
 
 async function createNewRest(restaurantData) {
     // console.log("hits create new rest function module export")
-    // console.log(restaurantData)
+    console.log("restaurantData:",restaurantData)
     // const newRestResponse = await db.Restaurant.create({restaurantData})
     const {
         yelpRestaurantId,
@@ -19,10 +19,6 @@ async function createNewRest(restaurantData) {
         longitude,
         latitude,
         image_url,
-        hasDrinks,
-        hasFood,
-        dogFriendly,
-        hasPatio
     } = restaurantData
     
     const newRestResponse = await db.Restaurant.findOneAndUpdate({
@@ -41,17 +37,17 @@ async function createNewRest(restaurantData) {
             longitude,
             latitude,
             image_url,
-            hasDrinks,
-            hasFood,
-            dogFriendly,
-            hasPatio
         },{
         upsert: true,
         new: true
     })
+    newRestResponse.filterParams = restaurantData.filterParams
+    await newRestResponse.save()
 
     return newRestResponse
 }
+
+
 
 async function addHours(restaurantObject, hourSet) {
     const newHourSet = await db.Hour.create({

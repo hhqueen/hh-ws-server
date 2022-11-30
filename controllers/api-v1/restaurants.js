@@ -7,7 +7,7 @@ router.get("/", async (req, res) => {
     try {
         // get all restaurants
         const allRests = await db.Restaurant.find({})
-        .populate("hourSet")
+        .populate([{path:"hourSet"}, {path:"filterParams"}])
         console.log(allRests)
         res.status(200).json(allRests)
     } catch (error) {
@@ -43,13 +43,13 @@ router.get("/:id", async (req, res) => {
     try {
         // return one restaurant by mongodb Id via req params
         const oneRest = await db.Restaurant.findById(req.params.id)
-        .populate([{
-            path:"menu", 
+        .populate(
+            [{path:"menu", 
             populate:[
                 {path:"drinkMenuImg"}, {path:"foodMenuImg"}
-            ]},{
-            path:"hourSet"
-        }])
+            ]},{path:"hourSet"},{path:"filterParams"}
+            ])
+        console.log("oneRestById:",oneRest)
         res.status(200).json(oneRest)
     } catch (error) {
         console.log(error)

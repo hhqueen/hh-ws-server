@@ -1,5 +1,25 @@
 const mongoose = require('mongoose')
 
+const FilterSchema = new mongoose.Schema({
+    hasDrinks: {
+        type: Boolean
+    },
+    hasFood: {
+        type: Boolean
+    },
+    dogFriendly: {
+        type: Boolean
+    },
+    hasPatio: {
+        type: Boolean
+    },
+    hasRoofTop: {
+        type: Boolean
+    }
+},{
+    timestamps: true
+})
+
 const RestaurantSchema = new mongoose.Schema({
     yelpRestaurantId: {
 		type: String,
@@ -45,21 +65,22 @@ const RestaurantSchema = new mongoose.Schema({
 	image_url: {
 		type: String
 	},
-    hasDrinks: {
-        type: Boolean
-    },
-    hasFood: {
-        type: Boolean
-    },
-    dogFriendly: {
-        type: Boolean
-    },
-    hasPatio: {
-        type: Boolean
-    },
-    hasRoofTop: {
-        type: Boolean
-    },
+    // hasDrinks: {
+    //     type: Boolean
+    // },
+    // hasFood: {
+    //     type: Boolean
+    // },
+    // dogFriendly: {
+    //     type: Boolean
+    // },
+    // hasPatio: {
+    //     type: Boolean
+    // },
+    // hasRoofTop: {
+    //     type: Boolean
+    // },
+    filterParams:FilterSchema,
     isActive:{
         type: Boolean,
         required: true,

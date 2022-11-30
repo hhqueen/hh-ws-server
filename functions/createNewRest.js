@@ -71,7 +71,9 @@ async function addMainMenu(restaurantObject, menuObj) {
         hasFoodSpecials: menuObj.hasFoodSpecials,
         foodMenuImg: menuObj.foodMenuImg,
         hasDrinkSpecials: menuObj.hasDrinkSpecials,
-        drinkMenuImg: menuObj.drinkMenuImg
+        drinkMenuImg: menuObj.drinkMenuImg,
+        isFoodAndDrinkMenu: menuObj.isFoodAndDrinkMenu,
+        foodAndDrinkMenuImg: menuObj.foodAndDrinkMenuImg
     })
     restaurantObject.menu = newMenu
     newMenu.restaurant.push(restaurantObject)

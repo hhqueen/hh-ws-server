@@ -46,7 +46,7 @@ router.get("/:id", async (req, res) => {
         .populate(
             [{path:"menu", 
             populate:[
-                {path:"drinkMenuImg"}, {path:"foodMenuImg"}
+                {path:"drinkMenuImg"}, {path:"foodMenuImg"},{path:"foodAndDrinkMenuImg"}
             ]},{path:"hourSet"},{path:"filterParams"}
             ])
         console.log("oneRestById:",oneRest)

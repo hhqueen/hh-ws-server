@@ -53,6 +53,13 @@ const HHMenuSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Image" 
     },
+    isFoodAndDrinkMenu:{
+        type: Boolean
+    },
+    foodAndDrinkMenuImg:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Image" 
+    },
     restaurant: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Restaurant" 

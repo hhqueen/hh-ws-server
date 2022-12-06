@@ -5,6 +5,8 @@ const jwt = require("jsonwebtoken")
 
 router.get("/", async (req, res) => {
     try {
+        let restFilterParams = {}
+        console.log("req.query:",req.query)
         // get all restaurants
         const allRests = await db.Restaurant.find({})
         .populate([{path:"hourSet"}, {path:"filterParams"}])

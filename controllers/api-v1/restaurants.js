@@ -6,7 +6,6 @@ const jwt = require("jsonwebtoken")
 router.get("/", async (req, res) => {
     try {
         let restFilterParams = {}
-        console.log("req.query:",req.query)
         // get all restaurants
         const allRests = await db.Restaurant.find({})
         .populate([{path:"hourSet"}, {path:"filterParams"}])
@@ -20,17 +19,14 @@ router.get("/", async (req, res) => {
 
 const yelpAPI = require('../../services/yelpAPI')
 router.get("/yelpSearch", async (req,res)=>{
-    // ?search=:term&lat=:lat&long=:long&address=:address
     try {
-        // console.log(req.body)
-        // console.log(req.query)
         const reqbody = {
             searchTerm: req.query.search,
             coordinates:{
                 lat:req.query.lat,
                 long:req.query.long
             },
-            location:req.query.address.replace("%20", " ")
+            location:req.query.address
         }
         const results = await yelpAPI.yelpAPIsearch(reqbody)
         console.log(results)

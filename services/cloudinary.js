@@ -10,7 +10,7 @@ cloudinary.config({
 
 uploadToCloudinary = async (path, folder) => {
 	try {
-		const response = await cloudinary.v2.uploader.upload(path, { folder })
+		const response = await cloudinary.v2.uploader.upload(path, { folder },{secure: true})
 		// console.log("cloudinary:",response)
 		return { url: response.url, public_id: response.public_id }
 	} catch (error) {

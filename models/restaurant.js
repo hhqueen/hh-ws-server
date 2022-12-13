@@ -1,21 +1,9 @@
 const mongoose = require('mongoose')
 
 const FilterSchema = new mongoose.Schema({
-    hasDrinks: {
-        type: Boolean
-    },
-    hasFood: {
-        type: Boolean
-    },
-    dogFriendly: {
-        type: Boolean
-    },
-    hasPatio: {
-        type: Boolean
-    },
-    hasRoofTop: {
-        type: Boolean
-    }
+    name: {type: String},
+    display: {type: String},
+    value: {type: Boolean},
 },{
     timestamps: true
 })
@@ -80,7 +68,7 @@ const RestaurantSchema = new mongoose.Schema({
     // hasRoofTop: {
     //     type: Boolean
     // },
-    filterParams:FilterSchema,
+    filterParams:[FilterSchema],
     isActive:{
         type: Boolean,
         required: true,

@@ -7,7 +7,9 @@ router.get("/", async (req, res) => {
     try {
         let restFilterParams = {}
         // get all restaurants
-        const allRests = await db.Restaurant.find({})
+        const allRests = await db.Restaurant.find({
+            isActive:true
+        })
             .populate([{ path: "hourSet" }, { path: "filterParams" }])
         console.log(allRests)
         res.status(200).json(allRests)
@@ -93,6 +95,16 @@ router.post("/newRestaurant", async (req, res) => {
     } catch (error) {
         console.log(error)
         res.status(400).json({ msg: `There was an error!`, error })
+    }
+})
+
+router.delete("/:id", async (req,res) =>{
+    try {
+        console.log(req.params.id)
+        const deleted = await db.Restaurant.findByIdAndUpdate(req.params.id,{isActive:false})
+        res.status(200).json({msg:`${deleted.name} id:${req.params.id} deleted Successfully!`})
+    } catch (error) {
+        console.log(error)
     }
 })
 

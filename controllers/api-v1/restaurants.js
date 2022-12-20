@@ -69,9 +69,11 @@ const {
 } = require('../../functions/createNewRest.js')
 
 router.post("/newRestaurant", async (req, res) => {
+    console.log("rest_reqBody:",req.body)
     try {
         // checks if new or edit restaurant
         const isNew = req.body._id === undefined
+        console.log("isNew Bool:",isNew)
         if (!isNew) {
             // check if the restaurant exits in db
             const findRestByYelpId = await db.Restaurant.findOne({
@@ -84,14 +86,16 @@ router.post("/newRestaurant", async (req, res) => {
         }
 
         const createdRest = await createEditRest(req.body.restaurantData)
+        // console.log("createdRest:",createdRest)
         // console.log(createdRest)
         // console.log("req.body.restaurantData",req.body.restaurantData)
         await addEditHours(createdRest, req.body.restaurantData.hourSet)
+        await addEditCusine(createdRest, req.body.restaurantData.cuisines)
         const createdMainMenu = await addEditMainMenu(createdRest, req.body.restaurantData.menu)
         await addEditFoodMenu(createdMainMenu, req.body.restaurantData.menu.foodMenu)
         await addEditDrinkMenu(createdMainMenu, req.body.restaurantData.menu.drinkMenu)
-        await addEditCusine(createdRest, req.body.restaurantData.cuisines)
         res.status(201).json({ msg: `${createdRest.name} was successfully created`, id: createdRest._id })
+        return
     } catch (error) {
         console.log(error)
         res.status(400).json({ msg: `There was an error!`, error })

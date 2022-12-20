@@ -8,6 +8,11 @@ const FilterSchema = new mongoose.Schema({
     timestamps: true
 })
 
+const cuisineSchema = new mongoose.Schema({
+    alias: {type: String},
+    title: {type: String}
+})
+
 const RestaurantSchema = new mongoose.Schema({
     yelpRestaurantId: {
 		type: String,
@@ -74,9 +79,7 @@ const RestaurantSchema = new mongoose.Schema({
         required: true,
         default: true
     },
-    cuisines: [{
-        type: String
-    }],
+    cuisines: [{type:String}],
     hourSet: {
 		type: mongoose.Schema.Types.ObjectId,
         ref: "Hour"

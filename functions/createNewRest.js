@@ -42,6 +42,7 @@ async function createEditRest(restaurantData) {
         new: true
     })
     newRestResponse.filterParams = restaurantData.filterParams
+    console.log("newRestResponse:",newRestResponse)
     await newRestResponse.save()
 
     return newRestResponse
@@ -50,16 +51,29 @@ async function createEditRest(restaurantData) {
 
 
 async function addEditHours(restaurantObject, hourSet) {
-    const newHourSet = await db.Hour.findOneAndUpdate({
-        _id:restaurantObject.hourSet._id
-    },{
-        originalRestaurant:restaurantObject._id,
-        description:"",
-        hours: hourSet.hours,
-    },{
-        upsert: true,
-        new: true
-    })
+    console.log("passed_restaurantObject:",restaurantObject)
+    console.log("passed_hourSet:",hourSet)
+    console.log("hoursetId Bool:",hourSet._id !== undefined)
+    let newHourSet 
+    // console.log("hourSet._id:",restaurantObject.hourSet._id)
+    if(hourSet._id !== undefined){ 
+        newHourSet = await db.Hour.findOneAndUpdate({
+            _id:restaurantObject.hourSet._id
+        },{
+            originalRestaurant:restaurantObject._id,
+            description:"",
+            hours: hourSet.hours,
+        },{
+            upsert: true,
+            new: true
+        })
+    } else {
+        newHourSet = await db.Hour.create({
+            originalRestaurant:restaurantObject._id,
+            description:"",
+            hours: hourSet.hours,
+        })
+    }
     newHourSet.restaurants.push(restaurantObject._id)
     restaurantObject.hourSet = newHourSet
     await restaurantObject.save()
@@ -68,47 +82,68 @@ async function addEditHours(restaurantObject, hourSet) {
 }
 
 async function addEditMainMenu(restaurantObject, menuObj) {
-    // console.log(restaurantObject)
-    console.log("menuObj:",menuObj)      
-    const newMenu = await db.Menu.findOneAndUpdate({
-        _id:restaurantObject.menu._id
-    },{
-        restaurantName:restaurantObject.name,
-        isChain: menuObj.isChain,
-        hasFoodSpecials: menuObj.hasFoodSpecials,
-        foodMenuImg: menuObj.foodMenuImg,
-        hasDrinkSpecials: menuObj.hasDrinkSpecials,
-        drinkMenuImg: menuObj.drinkMenuImg,
-        isFoodAndDrinkMenu: menuObj.isFoodAndDrinkMenu,
-        foodAndDrinkMenuImg: menuObj.foodAndDrinkMenuImg
-    },{
-        upsert: true,
-        new: true
-    })
-    restaurantObject.menu = newMenu
-    newMenu.restaurant.push(restaurantObject)
-    await restaurantObject.save()
-    await newMenu.save()
-    if (menuObj.foodMenuImg !== null) {
-        const foundFoodMenuImg = await db.Image.findById(menuObj.foodMenuImg._id)
-        foundFoodMenuImg.menu = newMenu._id
-        await foundFoodMenuImg.save()
+    console.log("addEditMenu_restaurantObject:",restaurantObject)
+    console.log("addEditMenu_menuObj:",menuObj)
+    try {
+        let newMenu
+        if (restaurantObject?.menu?._id !== undefined) {
+            newMenu = await db.Menu.findOneAndUpdate({
+                _id: restaurantObject.menu._id
+            },{
+                restaurantName:restaurantObject.name,
+                isChain: menuObj.isChain,
+                hasFoodSpecials: menuObj.hasFoodSpecials,
+                foodMenuImg: menuObj.foodMenuImg,
+                hasDrinkSpecials: menuObj.hasDrinkSpecials,
+                drinkMenuImg: menuObj.drinkMenuImg,
+                isFoodAndDrinkMenu: menuObj.isFoodAndDrinkMenu,
+                foodAndDrinkMenuImg: menuObj.foodAndDrinkMenuImg
+            },{
+                upsert: true,
+                new: true
+            })
+        } else {
+            newMenu = await db.Menu.create({
+                restaurantName:restaurantObject.name,
+                isChain: menuObj.isChain,
+                hasFoodSpecials: menuObj.hasFoodSpecials,
+                foodMenuImg: menuObj.foodMenuImg,
+                hasDrinkSpecials: menuObj.hasDrinkSpecials,
+                drinkMenuImg: menuObj.drinkMenuImg,
+                isFoodAndDrinkMenu: menuObj.isFoodAndDrinkMenu,
+                foodAndDrinkMenuImg: menuObj.foodAndDrinkMenuImg
+            })
+        }
+        restaurantObject.menu = newMenu
+        newMenu.restaurant.push(restaurantObject)
+        await restaurantObject.save()
+        await newMenu.save()
+        if (menuObj.foodMenuImg !== null) {
+            const foundFoodMenuImg = await db.Image.findById(menuObj.foodMenuImg._id)
+            foundFoodMenuImg.menu = newMenu._id
+            await foundFoodMenuImg.save()
+        }
+    
+        if (menuObj.drinkMenuImg !== null) {
+            const foundDrinkMenuImg = await db.Image.findById(menuObj.foodMenuImg._id)
+            foundDrinkMenuImg.menu = newMenu._id
+            await foundDrinkMenuImg.save()
+        }
+        return newMenu
+    } catch (error) {
+        console.log(error)
     }
-
-    if (menuObj.drinkMenuImg !== null) {
-        const foundDrinkMenuImg = await db.Image.findById(menuObj.foodMenuImg._id)
-        foundDrinkMenuImg.menu = newMenu._id
-        await foundDrinkMenuImg.save()
-    }
-    return newMenu
+   
 }
 
 async function addEditFoodMenu(mainMenuObj, FoodMenuArr) {
     // console.log("hits Food Menu Function")
-    FoodMenuArr.forEach((item)=>{
-        mainMenuObj.foodMenu.push(item)
-    })
-    return await mainMenuObj.save()
+    if (FoodMenuArr.length > 0) {
+        FoodMenuArr.forEach((item)=>{
+            mainMenuObj.foodMenu.push(item)
+        })
+        return await mainMenuObj.save()
+    }
 }
 
 async function addEditDrinkMenu(mainMenuObj, DrinkMenuArr) {
@@ -120,8 +155,13 @@ async function addEditDrinkMenu(mainMenuObj, DrinkMenuArr) {
 }
 
 async function addEditCusine(restaurantObject, cuisineArr) {
-    restaurantObject.cuisines = cuisineArr
-    return await restaurantObject.save()
+    // console.log("cuisineArr:",cuisineArr)
+    cuisineArr.forEach((cuisine)=>{
+        restaurantObject.cuisines.push(cuisine.title)
+    })
+    // restaurantObject.cuisines = cuisineArr
+    await restaurantObject.save()
+    return 
 }
 
 module.exports = {

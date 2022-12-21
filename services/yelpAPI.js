@@ -45,6 +45,7 @@ const returnYelpBusById = async (busId) => {
         return yelpResponse.data
     } catch (error) {
         console.log(error)
+        return error
     }
 }
 

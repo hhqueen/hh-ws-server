@@ -19,6 +19,7 @@ app.get("/", (req, res) => {
 app.use("/users", require("./controllers/api-v1/users"))
 app.use("/restaurants", require("./controllers/api-v1/restaurants"))
 app.use("/images", require("./controllers/api-v1/images"))
+app.use("/locations", require("./controllers/api-v1/locations"))
 
 app.listen(PORT, () => {
 	console.log(`Vegeta: ITS OVER (PORT)${PORT}!?!?`)

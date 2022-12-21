@@ -21,5 +21,6 @@ module.exports = {
     Restaurant: require('./restaurant'),
 	Menu: require('./menu'),
 	Image: require('./image'),
-	Hour: require('./hour')
+	Hour: require('./hour'),
+	Location: require('./location')
 }

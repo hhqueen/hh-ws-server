@@ -5,12 +5,31 @@ const jwt = require("jsonwebtoken")
 
 router.get("/", async (req, res) => {
     try {
+        console.log("restRoute_ReqQuery",req.query)
+        const distFtPerMile = 5280
+        const searchRadiusInMi = 5
+        const radius = searchRadiusInMi*distFtPerMile
+        
+        const currentLongitudeInFt = Number(req.query.currentLongitude)*10000/90*3280.4
+        const currentLatitudeInFt = Number(req.query.currentLatitude)*10000/90*3280.4
+
+        const positiveSearchLong = currentLongitudeInFt + radius
+        const negativeSearchLong = currentLongitudeInFt - radius
+        const positiveSearchLat = currentLatitudeInFt + radius
+        const negativeSearchLat = currentLatitudeInFt - radius
+        console.log("current Long and lat in Feet:",currentLongitudeInFt,",",currentLatitudeInFt)
         let restFilterParams = {}
         // get all restaurants
         const allRests = await db.Restaurant.find({
-            isActive:true
-        })
-            .populate([{ path: "hourSet" }, { path: "filterParams" }])
+            isActive:true,
+            // currently in feet, needs to be in decimal format
+            $and:[            
+                {longitude: {$gte: negativeSearchLong}},
+                {longitude: {$lte: positiveSearchLong}},
+                {latitude: {$gte: negativeSearchLat}},
+                {latitude: {$lte: positiveSearchLat}},
+            ]
+        }).populate([{ path: "hourSet" }, { path: "filterParams" }])
         console.log(allRests)
         res.status(200).json(allRests)
     } catch (error) {

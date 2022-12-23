@@ -114,17 +114,18 @@ async function addEditMainMenu(restaurantObject, menuObj) {
                 foodAndDrinkMenuImg: menuObj.foodAndDrinkMenuImg
             })
         }
+        console.log("addEditMainMenu_newMenu",newMenu)
         restaurantObject.menu = newMenu
         newMenu.restaurant.push(restaurantObject)
         await restaurantObject.save()
         await newMenu.save()
-        if (menuObj.foodMenuImg !== null) {
+        if (!menuObj.foodMenuImg === null) {
             const foundFoodMenuImg = await db.Image.findById(menuObj.foodMenuImg._id)
             foundFoodMenuImg.menu = newMenu._id
             await foundFoodMenuImg.save()
         }
     
-        if (menuObj.drinkMenuImg !== null) {
+        if (!menuObj.drinkMenuImg === null) {
             const foundDrinkMenuImg = await db.Image.findById(menuObj.foodMenuImg._id)
             foundDrinkMenuImg.menu = newMenu._id
             await foundDrinkMenuImg.save()
@@ -138,6 +139,8 @@ async function addEditMainMenu(restaurantObject, menuObj) {
 
 async function addEditFoodMenu(mainMenuObj, FoodMenuArr) {
     // console.log("hits Food Menu Function")
+    console.log("addEditFoodMenu_mainMenuObj:", mainMenuObj)
+    console.log("addEditFoodMenu_FoodMenuArr:", FoodMenuArr)
     if (FoodMenuArr.length > 0) {
         FoodMenuArr.forEach((item)=>{
             mainMenuObj.foodMenu.push(item)
@@ -148,6 +151,8 @@ async function addEditFoodMenu(mainMenuObj, FoodMenuArr) {
 
 async function addEditDrinkMenu(mainMenuObj, DrinkMenuArr) {
     // console.log("hits Drink Menu Function")
+    console.log("addEditDrinkMenu_mainMenuObj:", mainMenuObj)
+    console.log("addEditDrinkMenu_DrinkMenuArr:", DrinkMenuArr)
     DrinkMenuArr.forEach((item)=>{
         mainMenuObj.drinkMenu.push(item)
     })

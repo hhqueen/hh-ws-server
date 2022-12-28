@@ -2,35 +2,51 @@ const router = require("express").Router()
 const db = require("../../models")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
+const {decToDist} = require('../../functions/geoDistance.js')
+const {forwardSearchByTerm} = require('../../services/positionStack.js')
 
 router.get("/", async (req, res) => {
     try {
         console.log("restRoute_ReqQuery",req.query)
-        const distFtPerMile = 5280
-        const searchRadiusInMi = 5
-        const radius = searchRadiusInMi*distFtPerMile
-        
-        const currentLongitudeInFt = Number(req.query.currentLongitude)*10000/90*3280.4
-        const currentLatitudeInFt = Number(req.query.currentLatitude)*10000/90*3280.4
+        const searchRadius = {
+            distance: 5,
+            UOM: "mi"
+        }
 
-        const positiveSearchLong = currentLongitudeInFt + radius
-        const negativeSearchLong = currentLongitudeInFt - radius
-        const positiveSearchLat = currentLatitudeInFt + radius
-        const negativeSearchLat = currentLatitudeInFt - radius
-        console.log("current Long and lat in Feet:",currentLongitudeInFt,",",currentLatitudeInFt)
-        let restFilterParams = {}
+        let currentLongitudeInDecimal = Number(req.query.currentLongitude === 'null' ? null ?? 0 : req.query.currentLongitude)
+        let currentLatitudeInDecimal = Number(req.query.currentLatitude === 'null' ? null ?? 0 : req.query.currentLatitude)
+
+        if(req.query.address !== "Current Location" || req.query.address.length > 0 ) {
+            const posStackResponse = await forwardSearchByTerm(req.query.address)
+            console.log("posStackResponse:",posStackResponse)
+            currentLongitudeInDecimal = posStackResponse[0]?.longitude
+            currentLatitudeInDecimal = posStackResponse[0]?.latitude 
+        }
+
+        const newDeciCoords = decToDist(currentLatitudeInDecimal,currentLongitudeInDecimal, searchRadius.distance, searchRadius.UOM)
+        console.log("newDeciCoords:",newDeciCoords)
+
         // get all restaurants
         const allRests = await db.Restaurant.find({
-            isActive:true,
             // currently in feet, needs to be in decimal format
             $and:[            
-                {longitude: {$gte: negativeSearchLong}},
-                {longitude: {$lte: positiveSearchLong}},
-                {latitude: {$gte: negativeSearchLat}},
-                {latitude: {$lte: positiveSearchLat}},
+                {
+                    longitude: {$gte: newDeciCoords.negLong},
+                    longitude: {$lte: newDeciCoords.posLong},
+                    latitude: {$gte: newDeciCoords.negLat},
+                    latitude: {$lte: newDeciCoords.posLat}
+                },
+                {isActive:true}
+            ],
+            $or: [
+                {name: {$regex: req.query.searchTerm, $options:"i"}},
+                {cuisines: {$regex: req.query.searchTerm, $options:"i"}}
             ]
-        }).populate([{ path: "hourSet" }, { path: "filterParams" }])
-        console.log(allRests)
+        })
+        // const allRests = await db.Restaurant.find({
+        //     isActive:true})
+        .populate([{ path: "hourSet" }, { path: "filterParams" }])
+        console.log("allRests Length",allRests)
         res.status(200).json(allRests)
     } catch (error) {
         console.log(error)

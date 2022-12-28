@@ -24,7 +24,7 @@ const forwardSearchByTerm = async (term) =>{
         const response = await axios.get(url)
 
         // return data in form of array
-        return response.data
+        return response.data.data
     } catch (error) {
         console.log(error)
         return error

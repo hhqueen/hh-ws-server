@@ -16,6 +16,7 @@ router.get("/", async (req, res) => {
         let currentLongitudeInDecimal = Number(req.query.currentLongitude === 'null' ? null ?? 0 : req.query.currentLongitude)
         let currentLatitudeInDecimal = Number(req.query.currentLatitude === 'null' ? null ?? 0 : req.query.currentLatitude)
 
+        console.log("current latLong_server:",currentLongitudeInDecimal,currentLatitudeInDecimal)
         if(req.query.address !== "Current Location" || req.query.address.length > 0 ) {
             const posStackResponse = await forwardSearchByTerm(req.query.address)
             console.log("posStackResponse:",posStackResponse)

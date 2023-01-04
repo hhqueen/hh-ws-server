@@ -13,16 +13,25 @@ router.get("/", async (req, res) => {
             UOM: "mi"
         }
 
-        let currentLongitudeInDecimal = Number(req.query.currentLongitude === 'null' ? null ?? 0 : req.query.currentLongitude)
-        let currentLatitudeInDecimal = Number(req.query.currentLatitude === 'null' ? null ?? 0 : req.query.currentLatitude)
+        // defaults to coordinates 0,0
+        let currentLongitudeInDecimal = 0
+        let currentLatitudeInDecimal = 0
+        
+        // if the address is current location, use the current lat and long
+        if(req.query.address === "Current Location") {
+            currentLongitudeInDecimal = Number(req.query.currentLongitude)
+            currentLatitudeInDecimal = Number(req.query.currentLatitude)
+        }
 
-        console.log("current latLong_server:",currentLongitudeInDecimal,currentLatitudeInDecimal)
+        // if the address exists (implied not "Current Location"), use the position stack API (add WIP for existing locations in db)
         if(req.query.address !== "Current Location" && req.query.address.length > 0 ) {
             const posStackResponse = await forwardSearchByTerm(req.query.address)
             console.log("posStackResponse:",posStackResponse)
             currentLongitudeInDecimal = posStackResponse[0]?.longitude
             currentLatitudeInDecimal = posStackResponse[0]?.latitude 
         }
+
+        console.log("current latLong_server:",currentLongitudeInDecimal,currentLatitudeInDecimal)
 
         const newDeciCoords = decToDist(currentLatitudeInDecimal,currentLongitudeInDecimal, searchRadius.distance, searchRadius.UOM)
         console.log("newDeciCoords:",newDeciCoords)

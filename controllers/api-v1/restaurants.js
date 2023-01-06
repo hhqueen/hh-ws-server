@@ -6,6 +6,13 @@ const {decToDist} = require('../../functions/geoDistance.js')
 const {forwardSearchByTerm} = require('../../services/positionStack.js')
 
 router.get("/", async (req, res) => {
+    // const filterParamsTemplate = [
+    //     { name: "dogFriendly", display: "Dog Friendly" },
+    //     { name: "hasPatio", display: "Patio"  },
+    //     { name: "hasFood", display: "Food" },
+    //     { name: "hasDrinks", display: "Drinks" }
+    // ]
+    
     try {
         console.log("restRoute_ReqQuery",req.query)
         const searchRadius = {
@@ -33,8 +40,22 @@ router.get("/", async (req, res) => {
 
         console.log("current latLong_server:",currentLongitudeInDecimal,currentLatitudeInDecimal)
 
+        // returns new coordinates in 4 directions +/- latitude and +/- longitude based on search Radius Parameters
         const newDeciCoords = decToDist(currentLatitudeInDecimal,currentLongitudeInDecimal, searchRadius.distance, searchRadius.UOM)
         console.log("newDeciCoords:",newDeciCoords)
+
+        // function that takes filterParamsTemplate array and compares against req.query
+        // const filterQueryBuilder = ( reqQuery ,filterParamsTemplate) => {
+        //     const newFilterQueryArr = []
+        //     const reqQueryEntries = Object.entries(reqQuery)
+        //     console.log("reqQueryEntries:",reqQueryEntries)
+        //     reqQueryEntries.forEach((entry)=>{
+        //         if ()
+        //     })
+
+        // }
+
+        // const filterQuery = filterQueryBuilder( req.query ,filterParamsTemplate)
 
         // get all restaurants
         const allRests = await db.Restaurant.find({
@@ -48,10 +69,12 @@ router.get("/", async (req, res) => {
                 },
                 {isActive:true}
             ],
+            // checks name and cuisines for wildcard match against search term
             $or: [
                 {name: {$regex: req.query.searchTerm, $options:"i"}},
                 {cuisines: {$regex: req.query.searchTerm, $options:"i"}}
-            ]
+            ],
+
         })
         // const allRests = await db.Restaurant.find({
         //     isActive:true})

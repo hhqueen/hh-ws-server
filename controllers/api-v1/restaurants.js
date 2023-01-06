@@ -79,7 +79,7 @@ router.get("/", async (req, res) => {
         // const allRests = await db.Restaurant.find({
         //     isActive:true})
         .populate([{ path: "hourSet" }, { path: "filterParams" }])
-        console.log("allRests Length",allRests)
+        // console.log("allRests Length",allRests)
         res.status(200).json(allRests)
     } catch (error) {
         console.log(error)

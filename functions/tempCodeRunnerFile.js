@@ -1,5 +1,4 @@
 const db = require('../models')
-const { forEach } = require('../seeding/seedRestData.js')
 const restData = require('../seeding/seedRestData.js')
 const yelpAPI = require('../services/yelpAPI')
 
@@ -26,7 +25,7 @@ const newRestByID = async () => {
         console.log(error)
     }
 }
-newRestByID()
+// newRestByID()
 
 
 // function that flattens yelp API data for mongodb 
@@ -62,3 +61,70 @@ const convertYelpRest = (yelpData) => {
     return restInfo
 }
 
+const addHourSetFunction = () => {
+    const defaultHours = {
+        hours:
+            [
+                { day: 0, hasHH1: true, start1: 15, end1: 18, end1close: false, hasHH2: false, start2: 21, end2: 0, end2close: false }, //monday
+                { day: 1, hasHH1: true, start1: 15, end1: 18, end1close: false, hasHH2: false, start2: 21, end2: 0, end2close: false }, //tuesday
+                { day: 2, hasHH1: true, start1: 15, end1: 18, end1close: false, hasHH2: false, start2: 21, end2: 0, end2close: false }, //weds
+                { day: 3, hasHH1: true, start1: 15, end1: 18, end1close: false, hasHH2: false, start2: 21, end2: 0, end2close: false }, // thurs
+                { day: 4, hasHH1: true, start1: 15, end1: 18, end1close: false, hasHH2: false, start2: 21, end2: 0, end2close: false }, //friday
+                { day: 5, hasHH1: false, start1: 15, end1: 18, end1close: false, hasHH2: false, start2: 21, end2: 0, end2close: false }, //sat
+                { day: 6, hasHH1: false, start1: 15, end1: 18, end1close: false, hasHH2: false, start2: 21, end2: 0, end2close: false }, //sun
+            ]
+        }
+    const restArrIds = ['639d009fcc42bfe76aad7f14', "639d02b7cc42bfe76aafcae5", "63a3e8dccc42bfe76a093056"]
+    restArrIds.forEach( async (id)=>{
+        try {
+            const newHourSet = await db.Hour.create(defaultHours)
+            const foundRest = await db.Restaurant.findById(id)
+            foundRest.hourSet = newHourSet
+            await foundRest.save()
+            console.log(foundRest)
+        } catch (error) {
+            console.log(error)
+        }
+    })
+}
+
+// addHourSetFunction()
+
+const reGetAllRestaurantCuisinesFromYelp = async () => {
+    try {
+        // const allRestaurants = await db.Restaurant.find({},{_id:1,yelpRestaurantId:1})
+        // console.log(allRestaurants)
+
+        
+        const foundRest = await db.Restaurant.findById("63a3e94ecc42bfe76a09a73f")
+        const yelpData = await yelpAPI.returnYelpBusById(foundRest.yelpRestaurantId)
+        
+        // console.log(yelpData)
+        foundRest.cuisines = []
+        yelpData.categories.forEach((cat)=>{
+            foundRest.cuisines.push(cat.title)
+        })
+        await foundRest.save()
+        console.log(foundRest)
+
+        // allRestaurants.forEach(async (rest,idx)=>{
+        //     const functionTime = async (rest) =>{
+        //         try {
+        //             const yelpData = await yelpAPI.returnYelpBusById(rest.yelpRestaurantId)
+        //             console.log(yelpData)
+        
+        //             } catch (error) {
+        //                 console.log(error)
+        //             }
+        //     }
+        //     setTimeout(await functionTime(rest),1000)
+        // })
+    } catch (error) {
+        console.log(error)
+    }
+
+
+    // console.log(allRestaurants)
+}
+
+reGetAllRestaurantCuisinesFromYelp()

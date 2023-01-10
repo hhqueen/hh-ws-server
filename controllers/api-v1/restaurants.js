@@ -4,15 +4,9 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const {decToDist} = require('../../functions/geoDistance.js')
 const {forwardSearchByTerm} = require('../../services/positionStack.js')
+const geolib = require('geolib');
 
 router.get("/", async (req, res) => {
-    // const filterParamsTemplate = [
-    //     { name: "dogFriendly", display: "Dog Friendly" },
-    //     { name: "hasPatio", display: "Patio"  },
-    //     { name: "hasFood", display: "Food" },
-    //     { name: "hasDrinks", display: "Drinks" }
-    // ]
-    
     try {
         console.log("restRoute_ReqQuery",req.query)
         const searchRadius = {
@@ -33,33 +27,20 @@ router.get("/", async (req, res) => {
         // if the address exists (implied not "Current Location"), use the position stack API (add WIP for existing locations in db)
         if(req.query.address !== "Current Location" && req.query.address.length > 0 ) {
             const posStackResponse = await forwardSearchByTerm(req.query.address)
-            console.log("posStackResponse:",posStackResponse)
+            // console.log("posStackResponse:",posStackResponse)
             currentLongitudeInDecimal = posStackResponse[0]?.longitude
             currentLatitudeInDecimal = posStackResponse[0]?.latitude 
         }
 
-        console.log("current latLong_server:",currentLongitudeInDecimal,currentLatitudeInDecimal)
+        // console.log("current latLong_server:",currentLongitudeInDecimal,currentLatitudeInDecimal)
 
         // returns new coordinates in 4 directions +/- latitude and +/- longitude based on search Radius Parameters
         const newDeciCoords = decToDist(currentLatitudeInDecimal,currentLongitudeInDecimal, searchRadius.distance, searchRadius.UOM)
-        console.log("newDeciCoords:",newDeciCoords)
+        // console.log("newDeciCoords:",newDeciCoords)
 
-        // function that takes filterParamsTemplate array and compares against req.query
-        // const filterQueryBuilder = ( reqQuery ,filterParamsTemplate) => {
-        //     const newFilterQueryArr = []
-        //     const reqQueryEntries = Object.entries(reqQuery)
-        //     console.log("reqQueryEntries:",reqQueryEntries)
-        //     reqQueryEntries.forEach((entry)=>{
-        //         if ()
-        //     })
-
-        // }
-
-        // const filterQuery = filterQueryBuilder( req.query ,filterParamsTemplate)
 
         // get all restaurants
         const allRests = await db.Restaurant.find({
-            // currently in feet, needs to be in decimal format
             $and:[            
                 {
                     longitude: {$gte: newDeciCoords.negLong},
@@ -75,12 +56,39 @@ router.get("/", async (req, res) => {
                 {cuisines: {$regex: req.query.searchTerm, $options:"i"}}
             ],
 
+        }).populate([{ path: "hourSet" }, { path: "filterParams" }])
+
+        const presortedArray = []
+        geoLib_getDistanceAccuracyOption = 1
+        allRests.forEach((item)=>{
+            const distance = geolib.getDistance({
+                latitude: currentLatitudeInDecimal, longitude:currentLongitudeInDecimal
+            }, {
+                latitude: item.latitude, longitude: item.longitude
+            }, geoLib_getDistanceAccuracyOption)
+            
+            presortedArray.push({
+                _id: item._id,
+                distance
+            })
         })
-        // const allRests = await db.Restaurant.find({
-        //     isActive:true})
-        .populate([{ path: "hourSet" }, { path: "filterParams" }])
+        // console.log("presortedArray:",presortedArray)
         // console.log("allRests Length",allRests)
-        res.status(200).json(allRests)
+        const sortedArray = presortedArray.sort((a,b)=> {
+           if (a.distance < b.distance) return -1
+           if (a.distance < b.distance) return 1
+           return 0
+        })
+        // console.log("sortedArray",sortedArray)
+
+        const sortedAllRests = []
+        sortedArray.forEach((rest)=>{
+            const foundRest = allRests.find((entry) => entry._id == rest._id)
+            sortedAllRests.push(foundRest)
+        })
+        // console.log("sortedAllRests:",sortedAllRests)
+
+        res.status(200).json(sortedAllRests)
     } catch (error) {
         console.log(error)
         res.status(400).json(error)
@@ -163,7 +171,6 @@ router.post("/newRestaurant", async (req, res) => {
         await addEditFoodMenu(createdMainMenu, req.body.restaurantData.menu.foodMenu)
         await addEditDrinkMenu(createdMainMenu, req.body.restaurantData.menu.drinkMenu)
         res.status(201).json({ msg: `${createdRest.name} was successfully created`, id: createdRest._id })
-        return
     } catch (error) {
         console.log(error)
         res.status(400).json({ msg: `There was an error!`, error })

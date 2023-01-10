@@ -96,7 +96,7 @@ const reGetAllRestaurantCuisinesFromYelp = async () => {
         // console.log(allRestaurants)
 
         
-        const foundRest = await db.Restaurant.findById("63a3e94ecc42bfe76a09a73f")
+        const foundRest = await db.Restaurant.findById("63a1309bcc42bfe76a20bc96")
         const yelpData = await yelpAPI.returnYelpBusById(foundRest.yelpRestaurantId)
         
         // console.log(yelpData)

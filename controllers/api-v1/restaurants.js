@@ -164,7 +164,7 @@ router.post("/newRestaurant", async (req, res) => {
         const createdRest = await createEditRest(req.body.restaurantData)
         // console.log("createdRest:",createdRest)
         // console.log(createdRest)
-        // console.log("req.body.restaurantData",req.body.restaurantData)
+        console.log("req.body.restaurantData",req.body.restaurantData)
         await addEditHours(createdRest, req.body.restaurantData.hourSet)
         await addEditCusine(createdRest, req.body.restaurantData.cuisines)
         const createdMainMenu = await addEditMainMenu(createdRest, req.body.restaurantData.menu)

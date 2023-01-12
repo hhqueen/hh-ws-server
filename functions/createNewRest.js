@@ -160,14 +160,19 @@ async function addEditDrinkMenu(mainMenuObj, DrinkMenuArr) {
 }
 
 async function addEditCusine(restaurantObject, cuisineArr) {
-    // console.log("cuisineArr:",cuisineArr)
-    let newCuisineArr = []
-    cuisineArr.forEach((cuisine)=>{
-        newCuisineArr.push(cuisine.title)
-    })
-    restaurantObject.cuisines = newCuisineArr
-    // restaurantObject.cuisines = cuisineArr
-    await restaurantObject.save()
+    console.log("cuisineArr:",cuisineArr)
+    console.log("addEditCusine_restaurantObject:", restaurantObject)
+    if (restaurantObject.cuisines.length == 0) {
+        if (cuisineArr[0].title) {
+            cuisineArr.forEach((cuisine)=>{
+                restaurantObject.cuisines.push(cuisine.title)
+            })
+        } else {
+            restaurantObject.cuisines = cuisineArr
+        }
+
+        await restaurantObject.save()
+    }
     return 
 }
 

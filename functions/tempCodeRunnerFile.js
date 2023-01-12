@@ -127,4 +127,19 @@ const reGetAllRestaurantCuisinesFromYelp = async () => {
     // console.log(allRestaurants)
 }
 
-reGetAllRestaurantCuisinesFromYelp()
+// reGetAllRestaurantCuisinesFromYelp()
+
+const addFields = async () => {
+    // const allRest = db.Restaurant.find({})
+    const allHours = await db.Hour.find({})
+    allHours.forEach(async (hour)=>{
+        hour.hours.forEach((obj)=>{
+            obj.isAllDay = false
+            obj.isAllNight = false
+        })
+        await hour.save()
+    })
+    console.log("allHours",allHours)
+}
+
+addFields()

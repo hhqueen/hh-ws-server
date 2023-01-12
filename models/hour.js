@@ -6,6 +6,8 @@ const HourSchema = new mongoose.Schema({
         min: 0,
         max: 6
     },
+    isAllDay: {type: Boolean},
+    isAllNight : {type: Boolean},
     hasHH1: {
         type: Boolean
     },

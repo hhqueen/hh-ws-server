@@ -25,7 +25,22 @@ use('test');
 // Run a find command to view items sold on April 4th, 2014.
 // db.sales.find({ date: { $gte: new Date('2014-04-04'), $lt: new Date('2014-04-05') } });
 
-db.restaurants.find({ menu: { $exists: false}},{_id:1})
+// db.restaurants.find({ menu: { $exists: false}},{_id:1})
+// db.hours.find({hours:{$elemMatch: { isAllDay: {$exists: false}}}})
+db.hours.updateMany(
+    {},
+    {$set:{hours:[
+            { day: 0, hasHH1: true, start1: 15, end1: 18, end1close: false, hasHH2: false, start2: 21, end2: 0, end2close: false }, //monday
+            { day: 1, hasHH1: true, start1: 15, end1: 18, end1close: false, hasHH2: false, start2: 21, end2: 0, end2close: false }, //tuesday
+            { day: 2, hasHH1: true, start1: 15, end1: 18, end1close: false, hasHH2: false, start2: 21, end2: 0, end2close: false }, //weds
+            { day: 3, hasHH1: true, start1: 15, end1: 18, end1close: false, hasHH2: false, start2: 21, end2: 0, end2close: false }, // thurs
+            { day: 4, hasHH1: true, start1: 15, end1: 18, end1close: false, hasHH2: false, start2: 21, end2: 0, end2close: false }, //friday
+            { day: 5, hasHH1: false, start1: 15, end1: 18, end1close: false, hasHH2: false, start2: 21, end2: 0, end2close: false }, //sat
+            { day: 6, hasHH1: false, start1: 15, end1: 18, end1close: false, hasHH2: false, start2: 21, end2: 0, end2close: false }, //sun
+        ]}}    
+)
+db.hours.find()
+
 
 // console.log(allRest.length)
 // allRest.forEach((rest)=>{

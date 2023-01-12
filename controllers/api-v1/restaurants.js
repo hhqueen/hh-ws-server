@@ -148,16 +148,16 @@ router.post("/newRestaurant", async (req, res) => {
     console.log("rest_reqBody:",req.body)
     try {
         // checks if new or edit restaurant
-        const isNew = req.body._id === undefined
+        console.log("req.body._id:",req.body._id)
+        const isNew = req.body.restaurantData._id === undefined
         console.log("isNew Bool:",isNew)
-        if (!isNew) {
+        if (isNew === true) {
             // check if the restaurant exits in db
             const findRestByYelpId = await db.Restaurant.findOne({
                 yelpRestaurantId: req.body.restaurantData.yelpRestaurantId
             })
             if (findRestByYelpId) {
-                res.status(200).json({ msg: `${req.body.restaurantData.name} already exists!`, id: findRestByYelpId._id })
-                return
+                return res.status(200).json({ msg: `${req.body.restaurantData.name} already exists!`, id: findRestByYelpId._id })
             }
         }
 

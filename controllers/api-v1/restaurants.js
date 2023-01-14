@@ -187,4 +187,24 @@ router.delete("/:id", async (req,res) =>{
     }
 })
 
+router.post("/refreshYelpCuisines/:id", async (req,res)=>{
+    try {
+        const foundRest = await db.Restaurant.findById(req.params.id)
+        const yelpData = await yelpAPI.returnYelpBusById(foundRest.yelpRestaurantId)
+        
+        // console.log(yelpData)
+        foundRest.cuisines = []
+        yelpData.categories.forEach((cat)=>{
+            foundRest.cuisines.push(cat.title)
+        })
+        await foundRest.save()
+        console.log(foundRest)
+        res.status(200).json(foundRest)
+
+    } catch (error) {
+        console.log(error)
+    }
+
+})
+
 module.exports = router

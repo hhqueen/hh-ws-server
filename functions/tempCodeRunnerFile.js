@@ -92,11 +92,7 @@ const addHourSetFunction = () => {
 
 const reGetAllRestaurantCuisinesFromYelp = async () => {
     try {
-        // const allRestaurants = await db.Restaurant.find({},{_id:1,yelpRestaurantId:1})
-        // console.log(allRestaurants)
-
-        
-        const foundRest = await db.Restaurant.findById("63a1309bcc42bfe76a20bc96")
+        const foundRest = await db.Restaurant.findById("63bdf76dcc42bfe76ab3ca01")
         const yelpData = await yelpAPI.returnYelpBusById(foundRest.yelpRestaurantId)
         
         // console.log(yelpData)
@@ -107,18 +103,6 @@ const reGetAllRestaurantCuisinesFromYelp = async () => {
         await foundRest.save()
         console.log(foundRest)
 
-        // allRestaurants.forEach(async (rest,idx)=>{
-        //     const functionTime = async (rest) =>{
-        //         try {
-        //             const yelpData = await yelpAPI.returnYelpBusById(rest.yelpRestaurantId)
-        //             console.log(yelpData)
-        
-        //             } catch (error) {
-        //                 console.log(error)
-        //             }
-        //     }
-        //     setTimeout(await functionTime(rest),1000)
-        // })
     } catch (error) {
         console.log(error)
     }
@@ -127,7 +111,7 @@ const reGetAllRestaurantCuisinesFromYelp = async () => {
     // console.log(allRestaurants)
 }
 
-// reGetAllRestaurantCuisinesFromYelp()
+reGetAllRestaurantCuisinesFromYelp()
 
 const addFields = async () => {
     // const allRest = db.Restaurant.find({})
@@ -142,4 +126,4 @@ const addFields = async () => {
     console.log("allHours",allHours)
 }
 
-addFields()
+// addFields()

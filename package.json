@@ -19,6 +19,7 @@
   "homepage": "https://github.com/bluz225/hh-ws-server#readme",
   "dependencies": {
     "@mailchimp/mailchimp_marketing": "^3.0.80",
+    "@supercharge/request-ip": "^1.2.0",
     "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
     "cloudinary": "^1.32.0",

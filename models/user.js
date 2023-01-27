@@ -35,7 +35,8 @@ const UserSchema = new mongoose.Schema(
 		}],
 		auth:{
 			type:String,
-			required: true
+			required: true,
+			enum:["User", "Mod", "Admin"]
 		},
 		//AUTH: User, Mod (Moderator), or Admin ONLY
 		favoriteRestaurants: [{

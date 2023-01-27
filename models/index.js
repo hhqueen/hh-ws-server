@@ -23,5 +23,7 @@ module.exports = {
 	Menu: require('./menu'),
 	Image: require('./image'),
 	Hour: require('./hour'),
-	Location: require('./location')
+	Location: require('./location'),
+	APILog: require('./apiLog'),
+	ActivityLog: require('./activityLog')
 }

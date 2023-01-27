@@ -14,11 +14,20 @@ app.use(express.static("uploads"))
 
 async function expressMiddleware(req, res, next) {  
 	console.log("middlewareREQ:", req)
+	let reqBody_hidePassword = {
+		hasPassword: false, 
+		reqbody: {}
+	}
+	if(req.body.password) {
+		reqBody_hidePassword.hasPassword = true
+		reqBody_hidePassword.reqbody = req.body
+		reqBody_hidePassword.reqbody.password = "***********"
+	}
 	const reqIp = RequestIp.getClientIp(req)
 	const newAPI_Record = await db.APILog.create({
 		ipAddress: reqIp,
 		reqQuery: req.query,
-		reqBody: req.body,
+		reqBody: reqBody_hidePassword.hasPassword ? reqBody_hidePassword.reqbody : req.body,
 		reqParams: req.params,
 		httpMethod: req.method,
 		endPointURL: req.originalUrl

@@ -24,18 +24,21 @@ const APILogSchema = new mongoose.Schema({
     },
     httpMethod: {
         type:String,
-        default: null,
-        enum: ["GET", "POST", "PUT", "DELETE"]
+        default: null
     }, // get, post, put, delete, etc.
     endPointURL:{
         type:String,
         default: null
     },
-    request:{
-        type:String,
+    reqParams:{
+        type:Object,
         default: null
     },
-    payload: {
+    reqQuery:{
+        type:Object,
+        default: null
+    },
+    reqBody: {
         type: Object,
         default: null
     },

@@ -8,6 +8,8 @@ const geolib = require('geolib');
 
 router.get("/", async (req, res) => {
     try {
+        // console.log("middlewareREQ:",req.MiddlewareData)
+        // console.log("restRoute_Req",req.method, req.originalUrl, req.body, req.query)
         console.log("restRoute_ReqQuery",req.query)
         const searchRadius = {
             distance: 5,

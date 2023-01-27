@@ -1,5 +1,5 @@
 require("dotenv").config()
-require("./models") // connect to the db
+const db = require("./models") // connect to the db
 const express = require("express")
 const cors = require("cors")
 const RequestIp = require('@supercharge/request-ip')
@@ -12,9 +12,19 @@ app.use(express.json()) //json req.bodies
 // static upload folder for images
 app.use(express.static("uploads"))
 
-function expressMiddleware(req, res, next) {  
+async function expressMiddleware(req, res, next) {  
+	console.log("middlewareREQ:", req)
 	const reqIp = RequestIp.getClientIp(req)
-	console.log("requestIP Address:",reqIp)
+	const newAPI_Record = await db.APILog.create({
+		ipAddress: reqIp,
+		reqQuery: req.query,
+		reqBody: req.body,
+		reqParams: req.params,
+		httpMethod: req.method,
+		endPointURL: req.originalUrl
+	})
+	req.MiddlewareData = newAPI_Record
+	// console.log("requestIP Address:",reqIp)
 	next()
   }
 

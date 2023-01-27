@@ -20,9 +20,10 @@ async function expressMiddleware(req, res, next) {
 	}
 	if(req.body.password) {
 		reqBody_hidePassword.hasPassword = true
-		reqBody_hidePassword.reqbody = req.body
+		reqBody_hidePassword.reqbody = Object.assign({},req.body)
 		reqBody_hidePassword.reqbody.password = "***********"
 	}
+	
 	const reqIp = RequestIp.getClientIp(req)
 	const newAPI_Record = await db.APILog.create({
 		ipAddress: reqIp,

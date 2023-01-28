@@ -42,6 +42,10 @@ const APILogSchema = new mongoose.Schema({
         type: Object,
         default: null
     },
+    error:{
+        type: Object,
+        default: null
+    },
     executed_date: {
         type: Date,
         default: new Date

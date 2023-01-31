@@ -7,35 +7,43 @@ const APILogSchema = new mongoose.Schema({
         default: null
 	},
     ipAddress: {
-        type:String,
+        type: String,
         default: null
     },
     UI_ElementName: {
-        type:String,
+        type: String,
+        default: null
+    },
+    UI_ElementId: {
+        type: String,
         default: null
     },
     UI_ElementValue: {
-        type:String,
+        type: String,
+        default: null
+    },
+    UI_ElementChecked: {
+        type: String,
         default: null
     },
     UI_ComponentName: {
-        type:String,
+        type: String,
         default: null
     },
     httpMethod: {
-        type:String,
+        type: String,
         default: null
     }, // get, post, put, delete, etc.
     endPointURL:{
-        type:String,
+        type: String,
         default: null
     },
     reqParams:{
-        type:Object,
+        type: Object,
         default: null
     },
     reqQuery:{
-        type:Object,
+        type: Object,
         default: null
     },
     reqBody: {

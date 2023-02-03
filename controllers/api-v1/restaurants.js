@@ -8,6 +8,7 @@ const geolib = require('geolib');
 
 router.get("/", async (req, res) => {
     try {
+
         // console.log("middlewareREQ:",req.MiddlewareData)
         // console.log("restRoute_Req",req.method, req.originalUrl, req.body, req.query)
         console.log("restRoute_ReqQuery",req.query)
@@ -163,15 +164,15 @@ router.post("/newRestaurant", async (req, res) => {
             }
         }
 
-        const createdRest = await createEditRest(req.body.restaurantData)
+        const createdRest = await createEditRest(req.body.restaurantData, req.createdApiCall)
         // console.log("createdRest:",createdRest)
         // console.log(createdRest)
         console.log("req.body.restaurantData",req.body.restaurantData)
-        await addEditHours(createdRest, req.body.restaurantData.hourSet)
-        await addEditCusine(createdRest, req.body.restaurantData.cuisines)
-        const createdMainMenu = await addEditMainMenu(createdRest, req.body.restaurantData.menu)
-        await addEditFoodMenu(createdMainMenu, req.body.restaurantData.menu.foodMenu)
-        await addEditDrinkMenu(createdMainMenu, req.body.restaurantData.menu.drinkMenu)
+        await addEditHours(createdRest, req.body.restaurantData.hourSet, req.createdApiCall)
+        await addEditCusine(createdRest, req.body.restaurantData.cuisines, req.createdApiCall)
+        const createdMainMenu = await addEditMainMenu(createdRest, req.body.restaurantData.menu, req.createdApiCall)
+        await addEditFoodMenu(createdMainMenu, req.body.restaurantData.menu.foodMenu, req.createdApiCall)
+        await addEditDrinkMenu(createdMainMenu, req.body.restaurantData.menu.drinkMenu, req.createdApiCall)
         res.status(201).json({ msg: `${createdRest.name} was successfully created`, id: createdRest._id })
     } catch (error) {
         console.log(error)

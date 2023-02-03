@@ -25,6 +25,10 @@ const ActivityLogsSchema = new mongoose.Schema({
         type: Object,
         default: null
     },
+    Error: {
+        type: Object,
+        default: null
+    },
     apiCall:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "APILog",

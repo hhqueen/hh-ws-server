@@ -127,3 +127,13 @@ const addFields = async () => {
 }
 
 // addFields()
+
+const {arraysSame} = require('./isSame')
+
+const runArraysSameTest = () => {
+    let array1 = [1,2,3]
+    let array2 = [1,2,4, 5]
+    const arrayEval = arraysSame(array1,array2)
+    console.log("arrayEval:", arrayEval)
+}
+runArraysSameTest()

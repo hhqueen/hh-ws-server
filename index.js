@@ -14,9 +14,9 @@ app.use(express.json()) //json req.bodies
 app.use(express.static("uploads"))
 
 async function expressMiddleware(req, res, next) {  
-	console.log("middlewareReq:", req)
-	console.log("middlewareReqBody:", req.body)
-	console.log("middlewareReqQuery:", req.query)
+	// console.log("middlewareReq:", req)
+	// console.log("middlewareReqBody:", req.body)
+	// console.log("middlewareReqQuery:", req.query)
 	let reqBody_hidePassword = {
 		hasPassword: false, 
 		reqbody: {}
@@ -36,7 +36,7 @@ async function expressMiddleware(req, res, next) {
 		if (req.body.userId) { userId = req.body.userId }
 		// const foundUser = userId !== null && userId !== "null" ? await db.User.findById(userId) : null
 		let foundUser = null
-		console.log("userId:",userId)
+		// console.log("userId:",userId)
 		if (userId !== null && userId !== "null") {
 			foundUser = await db.User.findById(userId)
 		}
@@ -55,7 +55,7 @@ async function expressMiddleware(req, res, next) {
 			httpMethod: req.method,
 			endPointURL: req.originalUrl
 		})
-		console.log("newAPI_Record:", newAPI_Record)
+		// console.log("newAPI_Record:", newAPI_Record)
 	} catch (error) {
 		console.log(error)
 	} finally {
@@ -68,8 +68,8 @@ async function expressMiddleware(req, res, next) {
 app.use(expressMiddleware)  
 app.use((req,res, next)=>{
 	onFinished(res,async(err)=>{
-		console.log("onFinishedRes:",res.statusCode)
-		console.log("onFinishedErr:",err)
+		// console.log("onFinishedRes:",res.statusCode)
+		// console.log("onFinishedErr:",err)
 	})	
 	next()
 })

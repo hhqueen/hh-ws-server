@@ -8,7 +8,7 @@ async function createEditRest(restaurantData, apiCall) {
     try {
 
 
-        console.log("restaurantData:", restaurantData)
+        // console.log("restaurantData:", restaurantData)
         // const newRestResponse = await db.Restaurant.create({restaurantData})
         const {
             yelpRestaurantId,
@@ -29,7 +29,7 @@ async function createEditRest(restaurantData, apiCall) {
 
         let restResponse
         restResponse = await db.Restaurant.findOne({ yelpRestaurantId })
-        console.log("restResponse:",restResponse)
+        // console.log("restResponse:",restResponse)
 
         if (!restResponse) {
             restResponse = await db.Restaurant.findOneAndUpdate({
@@ -89,7 +89,7 @@ async function createEditRest(restaurantData, apiCall) {
                 console.log(error)
             }
         })
-        console.log("newRestResponse:", restResponse)
+        // console.log("newRestResponse:", restResponse)
         await restResponse.save()
         return restResponse
 
@@ -101,34 +101,54 @@ async function createEditRest(restaurantData, apiCall) {
 
 
 async function addEditHours(restaurantObject, hourSet, apiCall) {
-    console.log("passed_restaurantObject:", restaurantObject)
-    console.log("passed_hourSet:", hourSet)
-    console.log("hoursetId Bool:", hourSet._id !== undefined)
-    let newHourSet
-    // console.log("hourSet._id:",restaurantObject.hourSet._id)
-    if (hourSet._id !== undefined) {
-        newHourSet = await db.Hour.findOneAndUpdate({
-            _id: restaurantObject.hourSet._id
-        }, {
+    try {
+        // console.log("passed_restaurantObject:", restaurantObject)
+        // console.log("passed_hourSet:", hourSet)
+        // console.log("hoursetId Bool:", hourSet._id !== undefined)
+        let newHourSet
+        let prevHourSet = null
+        let content = {
             originalRestaurant: restaurantObject._id,
             description: "",
-            hours: hourSet.hours,
-        }, {
-            upsert: true,
-            new: true
-        })
-    } else {
-        newHourSet = await db.Hour.create({
+            hours: hourSet.hours
+        }
+        let emptyHoursContent = {
             originalRestaurant: restaurantObject._id,
             description: "",
-            hours: hourSet.hours,
+            hours: []
+        }
+
+        if (hourSet._id !== undefined) {
+            let filter = { _id: restaurantObject.hourSet._id }
+            let options = {
+                upsert: true,
+                new: true
+            }
+            // prev code
+            prevHourSet = await db.Hour.findById(filter)
+            newHourSet = await db.Hour.findOneAndUpdate(filter, content, options) 
+
+        } else {
+            newHourSet = await db.Hour.create(content)
+        }
+
+        await activityLogger({
+            DB_changes_collectionName: "HourSet",
+            DB_changes_documentId: newHourSet._id.valueOf(),
+            DB_changes_previousValue: prevHourSet,
+            DB_changes_newValue: newHourSet,
+            apiCall
         })
+
+        newHourSet.restaurants.push(restaurantObject._id)
+        restaurantObject.hourSet = newHourSet
+        await restaurantObject.save()
+        await newHourSet.save()
+        return
+    } catch (error) {
+        console.log(error)
     }
-    newHourSet.restaurants.push(restaurantObject._id)
-    restaurantObject.hourSet = newHourSet
-    await restaurantObject.save()
-    await newHourSet.save()
-    return
+
 }
 
 async function addEditMainMenu(restaurantObject, menuObj, apiCall) {
@@ -136,7 +156,9 @@ async function addEditMainMenu(restaurantObject, menuObj, apiCall) {
     console.log("addEditMenu_menuObj:", menuObj)
     try {
         let newMenu
+        let prevMenu = null
         if (restaurantObject?.menu?._id !== undefined) {
+            prevMenu = await db.Menu.findById({_id: restaurantObject.menu._id})
             newMenu = await db.Menu.findOneAndUpdate({
                 _id: restaurantObject.menu._id
             }, {
@@ -164,7 +186,16 @@ async function addEditMainMenu(restaurantObject, menuObj, apiCall) {
                 foodAndDrinkMenuImg: menuObj.foodAndDrinkMenuImg
             })
         }
-        console.log("addEditMainMenu_newMenu", newMenu)
+
+        await activityLogger({
+            DB_changes_collectionName: "Menu",
+            DB_changes_documentId: newMenu._id.valueOf(),
+            DB_changes_previousValue: prevMenu,
+            DB_changes_newValue: newMenu,
+            apiCall
+        })
+        
+        // console.log("addEditMainMenu_newMenu", newMenu)
         restaurantObject.menu = newMenu
         newMenu.restaurant.push(restaurantObject)
         await restaurantObject.save()

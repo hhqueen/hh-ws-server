@@ -118,6 +118,18 @@ router.get("/yelpSearch", async (req, res) => {
     }
 })
 
+router.get("/dbYelpIdCheck/:yelpId", async (req, res) => {
+    try {
+        const yelpId = req.params.yelpId
+        const foundRest = await db.Restaurant.findOne({
+            yelpRestaurantId: yelpId
+        })
+        res.status(200).json(foundRest)
+    } catch (error) {
+        res.status(400).json({error})
+    }   
+})
+
 router.get("/:id", async (req, res) => {
     try {
         // return one restaurant by mongodb Id via req params

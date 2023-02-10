@@ -124,6 +124,7 @@ router.get("/dbYelpIdCheck/:yelpId", async (req, res) => {
         const foundRest = await db.Restaurant.findOne({
             yelpRestaurantId: yelpId
         })
+        console.log("foundRest:", foundRest)
         res.status(200).json(foundRest)
     } catch (error) {
         res.status(400).json({error})

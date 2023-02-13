@@ -14,10 +14,15 @@ const decToDist = (deciLatitude, deciLongitude, radiusDistance, distanceType) =>
 
     if (distanceType = "mi") {
         // find new distance (mi) and convert back to deci
-        finalCoord.posLat = ((deciLatitude * milePerDegreeLatitude) + radiusDistance) / milePerDegreeLatitude
-        finalCoord.negLat = ((deciLatitude * milePerDegreeLatitude) - radiusDistance) / milePerDegreeLatitude
-        finalCoord.posLong = ((deciLongitude * milePerDegreeLatitude) + radiusDistance) / milePerDegreeLatitude
-        finalCoord.negLong = ((deciLongitude * milePerDegreeLatitude) - radiusDistance) / milePerDegreeLatitude
+        // finalCoord.posLat = ((deciLatitude * milePerDegreeLatitude) + radiusDistance) / milePerDegreeLatitude
+        // finalCoord.negLat = ((deciLatitude * milePerDegreeLatitude) - radiusDistance) / milePerDegreeLatitude
+        // finalCoord.posLong = ((deciLongitude * milePerDegreeLatitude) + radiusDistance) / milePerDegreeLongitude
+        // finalCoord.negLong = ((deciLongitude * milePerDegreeLatitude) - radiusDistance) / milePerDegreeLongitude
+
+        finalCoord.posLat =  deciLatitude + (radiusDistance / milePerDegreeLatitude)
+        finalCoord.negLat =  deciLatitude - (radiusDistance / milePerDegreeLatitude)
+        finalCoord.posLong = deciLongitude + (radiusDistance / milePerDegreeLongitude)
+        finalCoord.negLong = deciLongitude - (radiusDistance / milePerDegreeLongitude)
     } else if (distanceType = "km") {
         // // find new distance (km) and convert back to deci
         // finalDeciLatitude = deciLatitude * milePerDegreeLatitude *

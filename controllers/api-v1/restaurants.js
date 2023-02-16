@@ -51,12 +51,7 @@ router.get("/", async (req, res) => {
         geoLib_getDistanceAccuracyOption = 1
 
         allRests.forEach((item) => {
-            const distance = geolib.getDistance(
-                coordinates
-            ,{
-                latitude: item.latitude, longitude: item.longitude
-            })
-
+            const distance = geolib.getDistance( coordinates,{ latitude: item.latitude, longitude: item.longitude })
             if (distance <= distanceMeters) {
                 presortedArray.push({
                     _id: item._id,

@@ -9,21 +9,26 @@ const geolib = require('geolib');
 router.get("/", async (req, res) => {
     try {
         // console.log("restRoute_ReqQuery", req.query)
+        
         const searchRadius = {
             distance: 5,
             UOM: "mi"
         }
         const metersInMile = 1609.34
+        let distanceMeters
+        if(searchRadius.UOM = "mi") {
+            distanceMeters = searchRadius.distance * metersInMile
+        }
 
         const coordinates = {
             latitude: Number(req.query.currentLatitude),
             longitude: Number(req.query.currentLongitude)
         }
         const newDeciCoords = {
-            posLat: geolib.computeDestinationPoint(coordinates, searchRadius.distance * metersInMile, 0).latitude,
-            posLong: geolib.computeDestinationPoint(coordinates, searchRadius.distance * metersInMile, 90).longitude,
-            negLat: geolib.computeDestinationPoint(coordinates, searchRadius.distance * metersInMile, 180).latitude,
-            negLong: geolib.computeDestinationPoint(coordinates, searchRadius.distance * metersInMile, -90).longitude,
+            posLat: geolib.computeDestinationPoint(coordinates, distanceMeters, 0).latitude,
+            posLong: geolib.computeDestinationPoint(coordinates, distanceMeters, 90).longitude,
+            negLat: geolib.computeDestinationPoint(coordinates, distanceMeters, 180).latitude,
+            negLong: geolib.computeDestinationPoint(coordinates, distanceMeters, -90).longitude,
         }
        
 
@@ -52,16 +57,18 @@ router.get("/", async (req, res) => {
                 latitude: item.latitude, longitude: item.longitude
             })
 
-            presortedArray.push({
-                _id: item._id,
-                distance
-            })
+            if (distance <= distanceMeters) {
+                presortedArray.push({
+                    _id: item._id,
+                    distance
+                })
+            }
         })
         // console.log("presortedArray:",presortedArray)
         // console.log("allRests Length",allRests)
         const sortedArray = presortedArray.sort((a, b) => {
             if (a.distance < b.distance) return -1
-            if (a.distance < b.distance) return 1
+            if (a.distance > b.distance) return 1
             return 0
         })
         // console.log("sortedArray",sortedArray)

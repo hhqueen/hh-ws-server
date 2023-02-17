@@ -1,6 +1,6 @@
 const db = require("../models")
 const { activityLogger, activityLogTemplate } = require('./activityLogger')
-const { deepCopyObj } = require('./deepCopyObj')
+const { deepCopyObj } = require('./deepCopy')
 
 
 async function createEditRest(restaurantData, apiCall) {

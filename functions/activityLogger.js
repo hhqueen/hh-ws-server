@@ -11,10 +11,10 @@ const activityLogTemplate = {
 
 async function activityLogger({
     apiCall, 
-    DB_changes_collectionName,
-    DB_changes_documentId,
+    DB_changes_collectionName = null,
+    DB_changes_documentId = null,
     DB_changes_previousValue = null,
-    DB_changes_newValue,
+    DB_changes_newValue = null,
     DB_query_result = null
 }) {
     const showConsoleLogs = true

@@ -5,6 +5,8 @@ const jwt = require("jsonwebtoken")
 const { decToDist } = require('../../functions/geoDistance.js')
 const { forwardSearchByTerm } = require('../../services/positionStack.js')
 const geolib = require('geolib');
+const { activityLogger, activityLogTemplate } = require('../../functions/activityLogger')
+
 
 router.get("/", async (req, res) => {
     try {
@@ -74,7 +76,10 @@ router.get("/", async (req, res) => {
             sortedAllRests.push(foundRest)
         })
         // console.log("sortedAllRests:",sortedAllRests)
-
+        activityLogger({
+            DB_query_result:sortedAllRests,
+            apiCall: req.createdApiCall
+        })
         res.status(200).json(sortedAllRests)
     } catch (error) {
         console.log(error)

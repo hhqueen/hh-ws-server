@@ -2,6 +2,25 @@ const db = require('../models')
 const restData = require('../seeding/seedRestData.js')
 const yelpAPI = require('../services/yelpAPI')
 
+// code to check if there are any restaurants with "" cuisines
+const testCode = async () => {
+    try {
+        let badRestArr = []
+        const allRests = await db.Restaurant.find({})
+        const badRests = allRests.filter((rest)=>{
+            return rest.cuisines.some((cuisine)=> cuisine == "" || cuisine == null)
+        })
+        badRests.forEach((rest)=>{
+            badRestArr.push(badRests._id)
+        })
+        console.log(badRests)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+// testCode()
+
 const newRest = async () => {
     try {
         restData.forEach(async (restaurant) => {
@@ -17,10 +36,10 @@ const newRest = async () => {
 // searches by yelp Id and adds to db
 const newRestByID = async () => {
     try {
-            const busId = "pm1SGfjnSDIDw-1W1XbCSQ"
-            const yelpData = await yelpAPI.returnYelpBusById(busId)
-            const flatRestData = convertYelpRest(yelpData)
-            await db.Restaurant.create(flatRestData)
+        const busId = "pm1SGfjnSDIDw-1W1XbCSQ"
+        const yelpData = await yelpAPI.returnYelpBusById(busId)
+        const flatRestData = convertYelpRest(yelpData)
+        await db.Restaurant.create(flatRestData)
     } catch (error) {
         console.log(error)
     }
@@ -73,9 +92,9 @@ const addHourSetFunction = () => {
                 { day: 5, hasHH1: false, start1: 15, end1: 18, end1close: false, hasHH2: false, start2: 21, end2: 0, end2close: false }, //sat
                 { day: 6, hasHH1: false, start1: 15, end1: 18, end1close: false, hasHH2: false, start2: 21, end2: 0, end2close: false }, //sun
             ]
-        }
+    }
     const restArrIds = ['639d009fcc42bfe76aad7f14', "639d02b7cc42bfe76aafcae5", "63a3e8dccc42bfe76a093056"]
-    restArrIds.forEach( async (id)=>{
+    restArrIds.forEach(async (id) => {
         try {
             const newHourSet = await db.Hour.create(defaultHours)
             const foundRest = await db.Restaurant.findById(id)
@@ -94,10 +113,10 @@ const reGetAllRestaurantCuisinesFromYelp = async () => {
     try {
         const foundRest = await db.Restaurant.findById("63bdf76dcc42bfe76ab3ca01")
         const yelpData = await yelpAPI.returnYelpBusById(foundRest.yelpRestaurantId)
-        
+
         // console.log(yelpData)
         foundRest.cuisines = []
-        yelpData.categories.forEach((cat)=>{
+        yelpData.categories.forEach((cat) => {
             foundRest.cuisines.push(cat.title)
         })
         await foundRest.save()
@@ -111,29 +130,30 @@ const reGetAllRestaurantCuisinesFromYelp = async () => {
     // console.log(allRestaurants)
 }
 
-reGetAllRestaurantCuisinesFromYelp()
+// reGetAllRestaurantCuisinesFromYelp()
 
 const addFields = async () => {
     // const allRest = db.Restaurant.find({})
     const allHours = await db.Hour.find({})
-    allHours.forEach(async (hour)=>{
-        hour.hours.forEach((obj)=>{
+    allHours.forEach(async (hour) => {
+        hour.hours.forEach((obj) => {
             obj.isAllDay = false
             obj.isAllNight = false
         })
         await hour.save()
     })
-    console.log("allHours",allHours)
+    console.log("allHours", allHours)
 }
 
 // addFields()
 
-const {arraysSame} = require('./isSame')
+const { arraysSame } = require('./isSame')
 
 const runArraysSameTest = () => {
-    let array1 = [1,2,3]
-    let array2 = [1,2,4, 5]
-    const arrayEval = arraysSame(array1,array2)
+    let array1 = [1, 2, 3]
+    let array2 = [1, 2, 4, 5]
+    const arrayEval = arraysSame(array1, array2)
     console.log("arrayEval:", arrayEval)
 }
-runArraysSameTest()
+// runArraysSameTest()
+

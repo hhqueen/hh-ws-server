@@ -83,6 +83,7 @@ app.use("/restaurants", require("./controllers/api-v1/restaurants"))
 app.use("/images", require("./controllers/api-v1/images"))
 app.use("/locations", require("./controllers/api-v1/locations"))
 app.use("/apiLogs", require('./controllers/api-v1/apiLogs'))
+app.use("/analytics", require('./controllers/api-v1/analytics'))
 
 app.listen(PORT, () => {
 	console.log(`Vegeta: ITS OVER (PORT)${PORT}!?!?`)

@@ -30,11 +30,13 @@ router.get("/dailyVistors", async (req, res) => {
     console.log("dailyVistors EndPoint Hit")
     const vistors = await db.APILog.aggregate([
       {
-        modifiedBy: 1,
-        ipAddress: 1,
-        reqQuery: 1,
-        createdAt: 1,
-        executed_date: 1,
+        '$project': {
+          modifiedBy: 1,
+          ipAddress: 1,
+          reqQuery: 1,
+          createdAt: 1,
+          executed_date: 1,
+        }
       }
     ])
     res.status(200).send(vistors)
@@ -61,12 +63,12 @@ router.get("/registeredProfiles", async (req, res) => {
   }
 })
 
-router.get("/emailSubs", async (req,res) => {
+router.get("/emailSubs", async (req, res) => {
   try {
     const getMembers = await mailchimp.GetListInfo()
     const data = getMembers.members
     let reducedData = []
-    data.forEach((dataItem)=>{
+    data.forEach((dataItem) => {
       reducedData.push({
         email_address: dataItem.email_address,
         timestamp_opt: dataItem.timestamp_opt,

@@ -1,5 +1,6 @@
 const router = require("express").Router()
 const db = require("../../models")
+const mailchimp = require('../../services/mailChimp')
 
 router.get("/RestaurantsPerCity", async (req, res) => {
   try {
@@ -55,6 +56,24 @@ router.get("/registeredProfiles", async (req, res) => {
       }
     ])
     res.status(200).send(registeredProfiles)
+  } catch (error) {
+    res.status(400).json(error)
+  }
+})
+
+router.get("/emailSubs", async (req,res) => {
+  try {
+    const getMembers = await mailchimp.GetListInfo()
+    const data = getMembers.members
+    let reducedData = []
+    data.forEach((dataItem)=>{
+      reducedData.push({
+        email_address: dataItem.email_address,
+        timestamp_opt: dataItem.timestamp_opt,
+        ip_opt: dataItem.ip_opt
+      })
+    })
+    res.status(200).send(reducedData)
   } catch (error) {
     res.status(400).json(error)
   }

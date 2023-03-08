@@ -54,7 +54,7 @@ async function expressMiddleware(req, res, next) {
 			reqBody: reqBody_hidePassword.hasPassword ? reqBody_hidePassword.reqbody : req.body,
 			reqParams: req.params,
 			httpMethod: req.method,
-			endPointURL: req.get('origin')
+			endPointURL: req.get('origin') + req.originalUrl
 		})
 		// console.log("newAPI_Record:", newAPI_Record)
 	} catch (error) {

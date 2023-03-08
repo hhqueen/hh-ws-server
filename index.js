@@ -14,7 +14,8 @@ app.use(express.json()) //json req.bodies
 app.use(express.static("uploads"))
 
 async function expressMiddleware(req, res, next) {  
-	// console.log("middlewareReq:", req)
+	console.log("middlewareReq:", req)
+	// console.log("findme!", req.get('origin'))
 	// console.log("middlewareReqBody:", req.body)
 	// console.log("middlewareReqQuery:", req.query)
 	let reqBody_hidePassword = {
@@ -53,7 +54,7 @@ async function expressMiddleware(req, res, next) {
 			reqBody: reqBody_hidePassword.hasPassword ? reqBody_hidePassword.reqbody : req.body,
 			reqParams: req.params,
 			httpMethod: req.method,
-			endPointURL: req.originalUrl
+			endPointURL: req.get('origin')
 		})
 		// console.log("newAPI_Record:", newAPI_Record)
 	} catch (error) {

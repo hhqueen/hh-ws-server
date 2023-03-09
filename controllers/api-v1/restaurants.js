@@ -36,7 +36,6 @@ router.get("/", async (req, res) => {
 
         // get all restaurants
         const allRests = await db.Restaurant.find({
-
             $and: [
                 { longitude: { $gt: newDeciCoords.negLong, $lt: newDeciCoords.posLong } },
                 { latitude: { $gt: newDeciCoords.negLat, $lt: newDeciCoords.posLat } }
@@ -44,7 +43,8 @@ router.get("/", async (req, res) => {
             $or: [
                 { name: { $regex: req.query.searchTerm, $options: "i" } },
                 { cuisines: { $regex: req.query.searchTerm, $options: "i" } }
-            ]
+            ],
+            isActive: true
         }).populate([{ path: "hourSet" }, { path: "filterParams" }])
 
 

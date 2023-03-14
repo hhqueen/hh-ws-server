@@ -36,11 +36,18 @@ router.get("/dailyVistors", async (req, res) => {
           reqQuery: 1,
           createdAt: 1,
           executed_date: 1,
+          endPointURL: 1
         }
       }
     ])
-    res.status(200).send(vistors)
+    // console.log("vistors:",typeof vistors)
+    // console.log("vistors:",vistors)
+
+    const filteredVistors = vistors.filter(i => i.endPointURL !== null && i.endPointURL.indexOf("developement") === -1)
+    console.log("filteredVistors:", filteredVistors)
+    res.status(200).send(filteredVistors)
   } catch (error) {
+    console.log("/dailyVistors_error", error)
     res.status(400).json(error)
   }
 })

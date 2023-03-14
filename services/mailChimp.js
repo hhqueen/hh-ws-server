@@ -19,13 +19,17 @@ async function GetListInfo() {
   }
 }
 
-async function AddOneUser(email_addressParam, statusParam) {
+async function AddOneUser(params, status) {
   try {
       // const response = await mailchimp.ping.get();
       // const response = await mailchimp.root.getRoot();
       const response = await mailchimp.lists.addListMember("4da2e25b07",{
-        email_address:email_addressParam,
-        status: statusParam
+        email_address:params.email,
+        status: status,
+        merge_fields: {
+          FNAME: params.firstName,
+          LNAME: params.lastName,
+        }
       });
       console.log(response);
       return response

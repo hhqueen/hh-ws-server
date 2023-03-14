@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const mailChimp = require("../../services/mailChimp")
 const axios = require("axios")
+const {toCamelCase} = require("../../functions/toCamelCase")
 
 router.post("/signup", async (req, res) => {
     try {
@@ -46,14 +47,22 @@ router.post("/signup", async (req, res) => {
 
 		// sign the user in by sending a valid jwt back
 		// create the jwt payload
+		// const toCamelCase = (s) =>{
+		// 	return s && s[0].toUpperCase() + s.slice(1);
+		// }
+
 		const payload = {
-			firstName: newUser.firstName,
-			lastName: newUser.lastName,
-			userName: newUser.userName,
-			email: newUser.email,
+			firstName: toCamelCase(newUser.firstName),
+			lastName: toCamelCase(newUser.lastName),
+			userName: toCamelCase(newUser.userName),
+			email: toCamelCase(newUser.email),
             auth: newUser.auth,
 			id: newUser.id
 		}
+
+		// add user to mailchimp subscribe
+		const mailChimpRes = await mailChimp.AddOneUser(payload,"subscribed")
+		console.log("mailChimpRes:", mailChimpRes)
 		// sign the token and send it back
 		const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '30d' }) // expires in one day
 		res.json({ token })
@@ -94,10 +103,10 @@ router.post("/login", async (req, res) => {
 
 		// create a jwt payload
 		const payload = {
-			firstName: foundUser.firstName,
-			lastName: foundUser.lastName,
-			userName: foundUser.userName,
-			email: foundUser.email,
+			firstName: toCamelCase(foundUser.firstName),
+			lastName: toCamelCase(foundUser.lastName),
+			userName: toCamelCase(foundUser.userName),
+			email: toCamelCase(foundUser.email),
             auth: foundUser.auth,
 			id: foundUser.id
 		}

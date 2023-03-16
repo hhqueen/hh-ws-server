@@ -17,18 +17,6 @@ router.post("/signup", async (req, res) => {
 			res.status(400).json({msg:"Email already exists, please try again."})
 		}
 
-        // check if the username exists already
-        // const findUserUsername = await db.User.findOne({userName: req.body.userName.toLowerCase()})
-        // if (findUserUsername) {usernameError= "Username"}
-        
-        // returns error message and disallows registering twice
-        // let email_username_andString = ""
-        // if (findUserEmail || findUserUsername) {
-        //     if (findUserEmail && findUserUsername) {email_username_andString = " and "}
-        //     msg = `${emailError}${email_username_andString}${usernameError} already exists, please try again.`
-        //     return res.status(400).json({msg})
-        // }
-
 		// hash the user's password
 		const password = req.body.password
 		const saltRounds = 12
@@ -41,6 +29,7 @@ router.post("/signup", async (req, res) => {
 			userName: req.body.userName.toLowerCase(),
 			email: req.body.email.toLowerCase(),
             auth: "User",
+			emailSubbed:req.body.emailSub,
 			password: hashedPassword
 		})
 		await newUser.save()
@@ -57,12 +46,15 @@ router.post("/signup", async (req, res) => {
 			userName: toCamelCase(newUser.userName),
 			email: toCamelCase(newUser.email),
             auth: newUser.auth,
-			id: newUser.id
+			id: newUser.id,
+			emailSubbed: newUser.emailSubbed
 		}
 
 		// add user to mailchimp subscribe
-		const mailChimpRes = await mailChimp.AddOneUser(payload,"subscribed")
-		console.log("mailChimpRes:", mailChimpRes)
+		if(req.body.emailSub){
+			const mailChimpRes = await mailChimp.AddOneUser(payload,"subscribed")
+			console.log("mailChimpRes:", mailChimpRes)
+		}
 		// sign the token and send it back
 		const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '30d' }) // expires in one day
 		res.json({ token })
@@ -108,6 +100,7 @@ router.post("/login", async (req, res) => {
 			userName: toCamelCase(foundUser.userName),
 			email: toCamelCase(foundUser.email),
             auth: foundUser.auth,
+			emailSubbed:req.body.emailSub,
 			id: foundUser.id
 		}
 		// sign the jwt and send it back

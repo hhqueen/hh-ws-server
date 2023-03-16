@@ -25,6 +25,9 @@ const UserSchema = new mongoose.Schema(
 			required: true,
 			default: true
 		},
+		emailSubbed:{
+			type: Boolean,
+		},
 		profileImg: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Image",

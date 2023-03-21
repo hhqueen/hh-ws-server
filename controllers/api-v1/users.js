@@ -105,7 +105,7 @@ router.post("/login", async (req, res) => {
 		}
 		// sign the jwt and send it back
 		const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '30d' })
-		res.json({ token })
+		res.status(200).json({ token })
 	} catch (err) {
 		// don't forget to handle your errors
 		console.warn(err)
@@ -113,11 +113,13 @@ router.post("/login", async (req, res) => {
 	}
 })
 
-router.get("/profile/:userName", async (req, res) => {
+router.get("/profile/:id", async (req, res) => {
     try {
-        res.send("get /profile/:userName route")
+		const foundProfile = await db.User.findById(req.params.id)
+        res.status(200).json(foundProfile)
     } catch (error) {
         console.log(error)
+		res.status(500).json(error)
     }
 })
 
@@ -125,7 +127,7 @@ router.put("/profile/:userName", async (req, res) => {
     try {
         res.send("put /profile/:userName route")
     } catch (error) {
-        console.log(error)
+        res.status(500).json(error)
     }
 })
 
@@ -135,7 +137,7 @@ router.get("/mcGet", async (req,res) => {
 		const getMailChimpResponse = await mailChimp.GetListInfo()
 		res.send(getMailChimpResponse)
 	} catch (error) {
-		console.warn(error)
+		res.status(500).json(error)
 	}
 })
 
@@ -145,7 +147,7 @@ router.post("/mcAddOneUser", async (req,res) => {
 		const getMailChimpResponse = await mailChimp.AddOneUser(data.email_address,data.status)
 		res.send(getMailChimpResponse)
 	} catch (error) {
-		console.warn(error)
+		res.status(500).json(error)
 	}
 })
 
@@ -158,7 +160,7 @@ router.put("/mcAddUpdateOneUser", async (req,res) => {
 		const getMailChimpResponse = await mailChimp.AddUpdateOneUser(data)
 		res.send(getMailChimpResponse)
 	} catch (error) {
-		console.warn(error)
+		res.status(500).json(error)
 	}
 })
 

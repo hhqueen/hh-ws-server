@@ -212,4 +212,13 @@ router.post("/refreshYelpCuisines/:id", async (req, res) => {
 
 })
 
+router.get("/totalNumber", async (req,res)=>{
+    try {
+        const totalNum = await db.Restaurant.count({})
+        res.status(200).send(totalNum)
+    } catch (error) {
+        console.log(error)
+    }
+})
+
 module.exports = router

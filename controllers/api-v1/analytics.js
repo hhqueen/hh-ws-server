@@ -2,6 +2,15 @@ const router = require("express").Router()
 const db = require("../../models")
 const mailchimp = require('../../services/mailChimp')
 
+
+router.get("/", async (req,res)=>{
+  try {
+    res.send("analytics hit")
+  } catch (error) {
+    console.log(error)
+  }
+})
+
 router.get("/RestaurantsPerCity", async (req, res) => {
   try {
     console.log("RestaurantsPerCity EndPoint Hit")
@@ -24,6 +33,16 @@ router.get("/RestaurantsPerCity", async (req, res) => {
     res.status(400).json(error)
   }
 })
+
+router.get("/totalNumberOfRestaurants", async (req,res)=>{
+  try {
+      const totalNum = await db.Restaurant.count({})
+      res.status(200).json(totalNum)
+  } catch (error) {
+      console.log(error)
+  }
+})
+
 
 router.get("/dailyVistors", async (req, res) => {
   try {

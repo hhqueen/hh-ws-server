@@ -51,7 +51,7 @@ router.post("/signup", async (req, res) => {
 		}
 
 		// add user to mailchimp subscribe
-		if(req.body.emailSub){
+		if(req.body.emailSub === true){
 			const mailChimpRes = await mailChimp.AddOneUser(payload,"subscribed")
 			console.log("mailChimpRes:", mailChimpRes)
 		}
@@ -65,10 +65,12 @@ router.post("/signup", async (req, res) => {
 			res.status(400).json({ msg: err.message })
 		} else {
 			// handle all other errors
-			res.status(500).json({ msg: 'server error 500' })
+			res.status(500).json(err)
 		}
 	}
 })
+
+
 
 router.post("/login", async (req, res) => {
     try {
@@ -109,7 +111,7 @@ router.post("/login", async (req, res) => {
 	} catch (err) {
 		// don't forget to handle your errors
 		console.warn(err)
-		res.status(500).json({ msg: 'Server room is on fire 🔥' })
+		res.status(500).json({ msg: `Server room is on fire 🔥: ${err}` })
 	}
 })
 
@@ -119,7 +121,7 @@ router.get("/profile/:id", async (req, res) => {
         res.status(200).json(foundProfile)
     } catch (error) {
         console.log(error)
-		res.status(500).json(error)
+		res.status(500).json({msg:`Error: ${error}`})
     }
 })
 
@@ -127,19 +129,39 @@ router.put("/profile/:userName", async (req, res) => {
     try {
         res.send("put /profile/:userName route")
     } catch (error) {
-        res.status(500).json(error)
+        res.status(500).json({msg:`Error: ${error}`})
     }
 })
 
-
-router.get("/mcGet", async (req,res) => {
+router.put("/emailSubscribe/:userId", async (req,res)=>{
 	try {
-		const getMailChimpResponse = await mailChimp.GetListInfo()
-		res.send(getMailChimpResponse)
+		const userId = req.params.userId
+		console.log(`emailSubscribe reqbody ${userId}:`,req.body)
+		// const mailChimpRes = await mailChimp.AddUpdateOneUser()
+		// console.log("mailChimpRes:", mailChimpRes)
 	} catch (error) {
-		res.status(500).json(error)
+		res.status(500).json({msg:`Error: ${error}`})
 	}
 })
+
+router.put("/emailUnsubscribe/:userId", async (req,res)=>{
+	try {
+		
+	} catch (error) {
+		res.status(500).json({msg:`Error: ${error}`})
+	}
+})
+
+
+
+// router.get("/mcGet", async (req,res) => {
+// 	try {
+// 		const getMailChimpResponse = await mailChimp.GetListInfo()
+// 		res.send(getMailChimpResponse)
+// 	} catch (error) {
+// 		res.status(500).json(error)
+// 	}
+// })
 
 router.post("/mcAddOneUser", async (req,res) => {
 	try {
@@ -164,21 +186,21 @@ router.put("/mcAddUpdateOneUser", async (req,res) => {
 	}
 })
 
-router.post("/resetPassword", async (req,res) => {
-	try {
-		// WIP
-		const unique_email_id = req.body.unique_email_id
-		// res.send("/mcAddUpdateOneUser ROUTE")
-		// return
-		// console.log("mcAddUpdateOneUser")
-		// const data = req.body
-		// const getMailChimpResponse = await mailChimp.AddUpdateOneUser(data)
-		const response = await axios.post(`https://us21.api.mailchimp.com/3.0/automations/a54abfc080/emails/75688e956c/queue&API_KEY=${process.env.MAILCHIMP_API_KEY}`, {unique_email_id})
-		res.send(response)
-	} catch (error) {
-		console.warn(error)
-		res.send(error)
-	}
-})
+// router.post("/resetPassword", async (req,res) => {
+// 	try {
+// 		// WIP
+// 		const unique_email_id = req.body.unique_email_id
+// 		// res.send("/mcAddUpdateOneUser ROUTE")
+// 		// return
+// 		// console.log("mcAddUpdateOneUser")
+// 		// const data = req.body
+// 		// const getMailChimpResponse = await mailChimp.AddUpdateOneUser(data)
+// 		const response = await axios.post(`https://us21.api.mailchimp.com/3.0/automations/a54abfc080/emails/75688e956c/queue&API_KEY=${process.env.MAILCHIMP_API_KEY}`, {unique_email_id})
+// 		res.send(response)
+// 	} catch (error) {
+// 		console.warn(error)
+// 		res.send(error)
+// 	}
+// })
 
 module.exports = router

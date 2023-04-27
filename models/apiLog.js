@@ -21,6 +21,7 @@ const APILogSchema = new mongoose.Schema({
     UI_ElementValue: {
         type: String,
         default: null
+        
     },
     UI_ElementChecked: {
         type: String,

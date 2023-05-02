@@ -113,7 +113,7 @@ router.get("/dbYelpIdCheck/:yelpId", async (req, res) => {
         const foundRest = await db.Restaurant.findOne({
             yelpRestaurantId: yelpId
         })
-        console.log("foundRest:", foundRest)
+        // console.log("foundRest:", foundRest)
         res.status(200).json(foundRest)
     } catch (error) {
         res.status(400).json({ error })
@@ -132,7 +132,11 @@ router.get("/:id", async (req, res) => {
                     ]
                 }, { path: "hourSet" }, { path: "filterParams" }
                 ])
-        console.log("oneRestById:", oneRest)
+        // console.log("oneRestById:", oneRest)
+        activityLogger({
+            DB_query_result:oneRest,
+            apiCall: req.createdApiCall
+        })
         res.status(200).json(oneRest)
     } catch (error) {
         console.log(error)

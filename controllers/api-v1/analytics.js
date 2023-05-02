@@ -5,9 +5,20 @@ const mailchimp = require('../../services/mailChimp')
 
 router.get("/", async (req,res)=>{
   try {
-    res.send("analytics hit")
+    const allData = await db.APILog.find()
+    res.status(200).json(allData)
   } catch (error) {
     console.log(error)
+  }
+})
+
+router.get("/restaurant/:id", async (req,res)=>{
+  try {
+    const restDataById = await db.Restaurant.findById(req.params.id)
+    res.status(200).json(restDataById)
+  } catch (error) {
+    console.log(error)
+    res.status(400).json(error)
   }
 })
 

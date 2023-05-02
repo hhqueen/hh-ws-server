@@ -14,7 +14,7 @@ app.use(express.json()) //json req.bodies
 app.use(express.static("uploads"))
 
 async function expressMiddleware(req, res, next) {  
-	console.log("middlewareReq:", req)
+	// console.log("middlewareReq:", req)
 	// console.log("findme!", req.get('origin'))
 	// console.log("middlewareReqBody:", req.body)
 	// console.log("middlewareReqQuery:", req.query)
@@ -56,7 +56,7 @@ async function expressMiddleware(req, res, next) {
 			httpMethod: req.method,
 			endPointURL: req.get('origin') + req.originalUrl
 		})
-		// console.log("newAPI_Record:", newAPI_Record)
+		console.log("newAPI_Record:", newAPI_Record)
 	} catch (error) {
 		console.log(error)
 	} finally {

@@ -120,7 +120,7 @@ router.get("/dbYelpIdCheck/:yelpId", async (req, res) => {
     }
 })
 
-router.get("/:id", async (req, res) => {
+router.get("/page/:id", async (req, res) => {
     try {
         // return one restaurant by mongodb Id via req params
         const oneRest = await db.Restaurant.findById(req.params.id)
@@ -186,7 +186,7 @@ router.post("/newRestaurant", async (req, res) => {
     }
 })
 
-router.delete("/:id", async (req, res) => {
+router.delete("/page/:id", async (req, res) => {
     try {
         console.log(req.params.id)
         const deleted = await db.Restaurant.findByIdAndUpdate(req.params.id, { isActive: false })

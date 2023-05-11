@@ -40,8 +40,12 @@ async function expressMiddleware(req, res, next) {
 		// console.log("userId:",userId)
 		if (userId !== null && userId !== "null") {
 			foundUser = await db.User.findById(userId)
+		} else {
+			foundUser = null
 		}
-		console.log("foundUser:", foundUser)
+		const originUrl = req.get('origin') + req.originalUrl
+		// console.log("foundUser:", foundUser)
+		console.log()
 		newAPI_Record = await db.APILog.create({
 			modifiedBy: foundUser,
 			ipAddress: RequestIp.getClientIp(req),
@@ -54,8 +58,25 @@ async function expressMiddleware(req, res, next) {
 			reqBody: reqBody_hidePassword.hasPassword ? reqBody_hidePassword.reqbody : req.body,
 			reqParams: req.params,
 			httpMethod: req.method,
-			endPointURL: req.get('origin') + req.originalUrl
+			endPointURL: originUrl
 		})
+		const isUserVisit = (req.query.mobile && req.query.OS && req.query.restaurantId)
+		console.log("originUrl:", originUrl)
+		console.log("reqQuery:",req.query)
+		if(originUrl.includes("/restaurants/page") && !originUrl.includes("development.hhqueen")) {
+			newPageVist = await db.PageVisit.create({
+				ipAddress: RequestIp.getClientIp(req),
+				OS:req.query.OS,
+				Mobile: req.query.mobile,
+				Browser:req.query.browser,
+				uad: req.query.browser,
+				screenWidth: Number(req.query.screenWidth),
+				ScreenHeight: Number(req.query.screenHeight),
+				UserId: foundUser,
+				RestaurantId: await db.Restaurant.findById(req.query.restaurantId)
+			})
+		}
+
 		console.log("newAPI_Record:", newAPI_Record)
 	} catch (error) {
 		console.log(error)

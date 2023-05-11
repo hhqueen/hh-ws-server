@@ -25,5 +25,6 @@ module.exports = {
 	Hour: require('./hour'),
 	Location: require('./location'),
 	APILog: require('./apiLog'),
-	ActivityLog: require('./activityLog')
+	ActivityLog: require('./activityLog'),
+	PageVisit: require("./pageVisits")
 }

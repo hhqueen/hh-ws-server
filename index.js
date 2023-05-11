@@ -63,11 +63,13 @@ async function expressMiddleware(req, res, next) {
 		const isUserVisit = (req.query.mobile && req.query.OS && req.query.restaurantId)
 		console.log("originUrl:", originUrl)
 		console.log("reqQuery:",req.query)
-		if(originUrl.includes("/restaurants/page") && !originUrl.includes("development.hhqueen")) {
+		if(originUrl.includes("/restaurants/page") 
+		// && !originUrl.includes("development.hhqueen")
+		) {
 			newPageVist = await db.PageVisit.create({
 				ipAddress: RequestIp.getClientIp(req),
 				OS:req.query.OS ?? null,
-				Mobile: req.query.mobile ?? null,
+				Mobile: req.query.mobile,
 				Browser:req.query.browser ?? null,
 				uad: req.query.uad ?? null,
 				screenWidth: Number(req.query.screenWidth),

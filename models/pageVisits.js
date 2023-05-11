@@ -29,6 +29,10 @@ const PageVisitsSchema = new mongoose.Schema({
         type: Number,
         default: null
     },
+    endPointURL:{
+        type: String,
+        default: null
+    },
     RestaurantId:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Restaurant",

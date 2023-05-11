@@ -69,11 +69,12 @@ async function expressMiddleware(req, res, next) {
 				OS:req.query.OS,
 				Mobile: req.query.mobile,
 				Browser:req.query.browser,
-				uad: req.query.browser,
+				uad: req.query.uad,
 				screenWidth: Number(req.query.screenWidth),
 				ScreenHeight: Number(req.query.screenHeight),
 				UserId: foundUser,
-				RestaurantId: await db.Restaurant.findById(req.query.restaurantId)
+				RestaurantId: await db.Restaurant.findById(req.query.restaurantId),
+				endPointURL: originUrl
 			})
 		}
 

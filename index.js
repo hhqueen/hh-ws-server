@@ -65,7 +65,7 @@ async function expressMiddleware(req, res, next) {
 		console.log("reqQuery:",req.query)
 		
 		const isMobile = (uadStr)=> {
-			return 	uadStr.indexOf("mobile") != -1 
+			return 	uadStr.indexOf("Mobile") != -1 
 		}
 
 		// console.log("windowNav:", JSON.parse(req.query.windowNav))

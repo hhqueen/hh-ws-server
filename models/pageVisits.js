@@ -10,8 +10,7 @@ const PageVisitsSchema = new mongoose.Schema({
         default: null
     },
     Mobile:{
-        type: Boolean,
-        default: null
+        type: Boolean
     },
     Browser:{
         type: String,

@@ -67,7 +67,7 @@ async function expressMiddleware(req, res, next) {
 		const isMobile = (uadStr)=> {
 			return 	uadStr.indexOf("mobile") != -1 
 		}
-		
+
 		// console.log("windowNav:", JSON.parse(req.query.windowNav))
 		if(originUrl.includes("/restaurants/page") 
 		// && !originUrl.includes("development.hhqueen")
@@ -76,7 +76,7 @@ async function expressMiddleware(req, res, next) {
 				newPageVist = await db.PageVisit.create({
 					ipAddress: RequestIp.getClientIp(req),
 					OS:req.query.OS ?? null,
-					Mobile: isMobile(req.query.mobile),
+					Mobile: isMobile(req.query.uad),
 					Browser: req.query.browser ?? null,
 					uad: req.query.uad ?? null,
 					screenWidth: Number(req.query.screenWidth),

@@ -63,21 +63,26 @@ async function expressMiddleware(req, res, next) {
 		const isUserVisit = (req.query.mobile && req.query.OS && req.query.restaurantId)
 		console.log("originUrl:", originUrl)
 		console.log("reqQuery:",req.query)
+		console.log("windowNav:", JSON.parse(req.query.windowNav))
 		if(originUrl.includes("/restaurants/page") 
 		// && !originUrl.includes("development.hhqueen")
 		) {
-			newPageVist = await db.PageVisit.create({
-				ipAddress: RequestIp.getClientIp(req),
-				OS:req.query.OS ?? null,
-				Mobile: req.query.mobile ?? true,
-				Browser: req.query.browser ?? null,
-				uad: req.query.uad ?? null,
-				screenWidth: Number(req.query.screenWidth),
-				ScreenHeight: Number(req.query.screenHeight),
-				UserId: foundUser,
-				RestaurantId: await db.Restaurant.findById(req.query.restaurantId),
-				endPointURL: originUrl
-			})
+			try {
+				newPageVist = await db.PageVisit.create({
+					ipAddress: RequestIp.getClientIp(req),
+					OS:req.query.OS ?? null,
+					Mobile: req.query.mobile ?? true,
+					Browser: req.query.browser ?? null,
+					uad: req.query.uad ?? null,
+					screenWidth: Number(req.query.screenWidth),
+					ScreenHeight: Number(req.query.screenHeight),
+					UserId: foundUser,
+					RestaurantId: await db.Restaurant.findById(req.query.restaurantId),
+					endPointURL: originUrl
+				})
+			} catch (error) {
+				console.log(error)
+			}
 		}
 
 		console.log("newAPI_Record:", newAPI_Record)

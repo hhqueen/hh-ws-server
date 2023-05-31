@@ -1,4 +1,57 @@
+const {isNumber, isObject} = require('./typeChecker')
+const geolib = require('geolib');
 
+const kmPerMile = 1.60934
+
+const kmToMi = (num) =>{
+    if (!isNumber(num)) return Error(`incorrect type, expecting number`)
+    return num / kmPerMile
+}
+
+const miToKm = (num) =>{
+    if (!isNumber(num)) return Error(`incorrect type, expecting number`)
+    return num * kmPerMile
+
+}
+
+const boxCoordsFromlatLong = (coordinates = {latitude: null, longitude: null}, distanceMeters = null) =>{
+    // type checking code (WIP)
+    // if(!isObject(coordinates)) return Error('Coordinates not an object')
+    // if(!isNumber(distanceMeters)) return Error('distance meter not an object')
+    // const objKeys = Object.keys(coordinates)
+    // if(!objKeys.indexOf('latitude')) return Error('latitude key not found in coordinate Object')
+
+    let boxCoords = {
+        posLat: geolib.computeDestinationPoint(coordinates, distanceMeters, 0).latitude,
+        posLong: geolib.computeDestinationPoint(coordinates, distanceMeters, 90).longitude,
+        negLat: geolib.computeDestinationPoint(coordinates, distanceMeters, 180).latitude,
+        negLong: geolib.computeDestinationPoint(coordinates, distanceMeters, -90).longitude,
+    }
+    return boxCoords
+}
+
+const isCoordsInBox = (
+    // init variable
+    coordinates = {latitude: null, longitude: null}, 
+    boxCoords = {
+        posLat: null,
+        posLong: null,
+        negLat: null,
+        negLong: null
+    }
+    ) =>{
+
+    // obj deconstruct 
+    const {latitude, longitude} = coordinates
+    const {posLat, posLong, negLat, negLong} = boxCoords
+
+    // check if lat and long is within passed box coords, if so return true
+    if(latitude < posLat && latitude > negLat && longitude < posLong && longitude > negLong) return true
+    
+    // else return false
+    return false
+
+}
 
 const decToDist = (deciLatitude, deciLongitude, radiusDistance, distanceType) => {
     let finalCoord = {
@@ -33,4 +86,10 @@ const decToDist = (deciLatitude, deciLongitude, radiusDistance, distanceType) =>
     return finalCoord
 }
 
-module.exports = {decToDist}
+module.exports = {
+    decToDist,
+    kmToMi,
+    miToKm,
+    boxCoordsFromlatLong,
+    isCoordsInBox
+}

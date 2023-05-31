@@ -17,7 +17,7 @@ async function activityLogger({
     DB_changes_newValue = null,
     DB_query_result = null
 }) {
-    const showConsoleLogs = true
+    const showConsoleLogs = false
     let newActivity = null
     let respError = null
     try {

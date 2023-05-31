@@ -1,9 +1,10 @@
 const router = require("express").Router()
 const db = require("../../models")
 const mailchimp = require('../../services/mailChimp')
+const { boxCoordsFromlatLong, isCoordsInBox, miToKm } = require('../../functions/geoDistance')
+const { ObjectId } = require('mongodb')
 
-
-router.get("/", async (req,res)=>{
+router.get("/", async (req, res) => {
   try {
     const allData = await db.APILog.find()
     res.status(200).json(allData)
@@ -12,7 +13,7 @@ router.get("/", async (req,res)=>{
   }
 })
 
-router.get("/restaurant/:id", async (req,res)=>{
+router.get("/restaurant/:id", async (req, res) => {
   try {
     const restDataById = await db.Restaurant.findById(req.params.id)
     res.status(200).json(restDataById)
@@ -39,18 +40,115 @@ router.get("/RestaurantsPerCity", async (req, res) => {
         }
       }
     ])
-    res.status(200).send(cityCount)
+    res.status(200).json(cityCount)
   } catch (error) {
     res.status(400).json(error)
   }
 })
 
-router.get("/totalNumberOfRestaurants", async (req,res)=>{
+router.get("/TopThreeCitiesNearMe", async (req, res) => {
   try {
-      const totalNum = await db.Restaurant.count({})
-      res.status(200).json(totalNum)
+    let message = 'TopThreeCitiesNearMe route'
+    const coords = {
+      latitude: Number(req.query.latitude),
+      longitude: Number(req.query.longitude)
+    }
+
+    const { posLat, negLat, posLong, negLong } = boxCoordsFromlatLong(coords, miToKm(Number(req.query.distance)) * 1000)
+
+    const cityCount = await db.Restaurant.aggregate([
+      {
+        $match: {
+          $and: [
+            { longitude: { $gt: negLong, $lt: posLong } },
+            { latitude: { $gt: negLat, $lt: posLat } }
+          ]
+        }
+      },
+      {
+        '$group': {
+          '_id': '$city',
+          'numRestaurants': {
+            '$count': {}
+          }
+        }
+      }, {
+        '$sort': {
+          'numRestaurants': -1
+        }
+      }
+    ])
+
+    // const filteredBoxRestaurants = await db.Restaurant.find({
+    //   $and: [
+    //     { longitude: { $gt: negLong, $lt: posLong } },
+    //     { latitude: { $gt: negLat, $lt: posLat } }
+    //   ],
+    //   isActive: true
+    // })//.populate([{ path: "hourSet" }, { path: "filterParams" }])
+    // let listOfRestIdsArr = filteredBoxRestaurants.map((rest) => ObjectId(rest._id))
+
+    // const restDataMap = new Map()
+    // filteredBoxRestaurants.forEach(rest => {
+    //   const getCity = restDataMap.get(rest.city)
+    //   if (getCity === undefined) {
+    //     restDataMap.set(rest.city, 1)
+    //   }
+    // })
+
+
+    res.status(200).json(cityCount)
   } catch (error) {
-      console.log(error)
+    res.status(400).json(error)
+  }
+})
+
+router.get("/RestaurantVisits", async (req, res) => {
+  try {
+    // let listOfRestIdsArr = filteredBoxRestaurants.map((rest) => ObjectId(rest._id))
+    let vistedData = await db.PageVisit.aggregate([
+      // {
+      //   $match: {
+      //     RestaurantId: { $in: filteredBoxRestaurants.map((rest) => ObjectId(rest._id)) }
+      //   }
+      // },
+      {
+        $group: {
+          _id: "$RestaurantId",
+          numOfVisits: {
+            $count: {},
+          },
+        }
+      },
+      {
+        $sort: {
+          numOfVisits: -1,
+        }
+      },
+      {
+        $lookup: {
+          from: "restaurants",
+          localField: "_id",
+          foreignField: "_id",
+          as: "restaurantData",
+        }
+      }
+    ])
+    // .limit(limitNum)
+
+    res.status(200).json(vistedData)
+  } catch (error) {
+    console.log(error)
+    res.status(400).json(error)
+  }
+})
+
+router.get("/totalNumberOfRestaurants", async (req, res) => {
+  try {
+    const totalNum = await db.Restaurant.count({})
+    res.status(200).json(totalNum)
+  } catch (error) {
+    console.log(error)
   }
 })
 
@@ -117,5 +215,7 @@ router.get("/emailSubs", async (req, res) => {
     res.status(400).json(error)
   }
 })
+
+
 
 module.exports = router

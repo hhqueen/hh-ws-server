@@ -2,7 +2,7 @@ const router = require("express").Router()
 const db = require("../../models")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
-const { decToDist } = require('../../functions/geoDistance.js')
+const { decToDist, boxCoordsFromlatLong, miToKm } = require('../../functions/geoDistance.js')
 const { forwardSearchByTerm } = require('../../services/positionStack.js')
 const geolib = require('geolib');
 const { activityLogger, activityLogTemplate } = require('../../functions/activityLogger')
@@ -10,29 +10,22 @@ const { activityLogger, activityLogTemplate } = require('../../functions/activit
 
 router.get("/", async (req, res) => {
     try {
-        // console.log("restRoute_ReqQuery", req.query)
+        console.log("restRoute_ReqQuery", req.query)
         
         const searchRadius = {
-            distance: 5,
-            UOM: "mi"
+            distance: Number(req.query.distance),
+            UOM: req.query.UOM
         }
-        const metersInMile = 1609.34
+
         let distanceMeters
-        if(searchRadius.UOM = "mi") {
-            distanceMeters = searchRadius.distance * metersInMile
-        }
+        if(searchRadius.UOM = "mi") { distanceMeters = miToKm(searchRadius.distance) * 1000 }
 
         const coordinates = {
             latitude: Number(req.query.currentLatitude),
             longitude: Number(req.query.currentLongitude)
         }
-        const newDeciCoords = {
-            posLat: geolib.computeDestinationPoint(coordinates, distanceMeters, 0).latitude,
-            posLong: geolib.computeDestinationPoint(coordinates, distanceMeters, 90).longitude,
-            negLat: geolib.computeDestinationPoint(coordinates, distanceMeters, 180).latitude,
-            negLong: geolib.computeDestinationPoint(coordinates, distanceMeters, -90).longitude,
-        }
-       
+
+       const newDeciCoords = boxCoordsFromlatLong(coordinates, distanceMeters)
 
         // get all restaurants
         const allRests = await db.Restaurant.find({

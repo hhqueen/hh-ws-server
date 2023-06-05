@@ -67,7 +67,10 @@ router.get("/TopThreeCitiesNearMe", async (req, res) => {
       },
       {
         '$group': {
-          '_id': '$city',
+          '_id': {
+            city: '$city',
+            state: '$state'
+          },
           'numRestaurants': {
             '$count': {}
           }

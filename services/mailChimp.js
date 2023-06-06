@@ -39,25 +39,26 @@ async function AddOneUser(params, status) {
   }
 }
 
-async function AddUpdateOneUser(params) {
+async function AddUpdateOneUser(params, status) {
   try {
       // const response = await mailchimp.ping.get();
       // const response = await mailchimp.root.getRoot();
       const response = await mailchimp.lists.setListMember(
         "4da2e25b07",
-        params.contact_id,
+        params.email,
         {
-          email_address: params.email_address,
+          email_address: params.email,
           status_if_new: "subscribed",
-          status: params.status, 
-          merge_fields: {
-            FNAME: params.info.FNAME,
-            LNAME: params.info.LNAME,
-            ADDRESS:params.info.ADDRESS,
-            PHONE:params.info.PHONE,
-            BIRTHDAY:params.info.BIRTHDAY,
+          status: status === true ? "subscribed" : "unsubscribed", 
+          merge_fields: { 
+            FNAME: params.firstName ?? "",
+            LNAME: params.lastName ?? "",
           }
-      });
+      },
+      {
+        skip_merge_validation: true
+      }
+      );
       console.log(response);
       return response
   } catch (error) {

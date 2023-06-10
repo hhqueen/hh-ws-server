@@ -53,34 +53,50 @@ router.get("/TopThreeCitiesNearMe", async (req, res) => {
       latitude: Number(req.query.latitude),
       longitude: Number(req.query.longitude)
     }
+    
+    const distanceSteps = [1, 3, 5, 10 ,15, 20]
+        
+    let gotRestArr = []
+    for(let i = 0;i < distanceSteps.length; i++ ){
+      gotRestArr = await getRestaurants(distanceSteps[i])
+      if (gotRestArr.length > 3) {
+        break;
+      }
+    }
 
-    const { posLat, negLat, posLong, negLong } = boxCoordsFromlatLong(coords, miToKm(Number(req.query.distance)) * 1000)
+    async function getRestaurants(distance) {
+      const { posLat, negLat, posLong, negLong } = boxCoordsFromlatLong(coords, miToKm(Number(distance)) * 1000)
 
-    const cityCount = await db.Restaurant.aggregate([
-      {
-        $match: {
-          $and: [
-            { longitude: { $gt: negLong, $lt: posLong } },
-            { latitude: { $gt: negLat, $lt: posLat } }
-          ]
-        }
-      },
-      {
-        '$group': {
-          '_id': {
-            city: '$city',
-            state: '$state'
-          },
-          'numRestaurants': {
-            '$count': {}
+      const cityCount = await db.Restaurant.aggregate([
+        {
+          $match: {
+            $and: [
+              { longitude: { $gt: negLong, $lt: posLong } },
+              { latitude: { $gt: negLat, $lt: posLat } }
+            ]
+          }
+        },
+        {
+          '$group': {
+            '_id': {
+              city: '$city',
+              state: '$state'
+            },
+            'numRestaurants': {
+              '$count': {}
+            }
+          }
+        }, {
+          '$sort': {
+            'numRestaurants': -1
           }
         }
-      }, {
-        '$sort': {
-          'numRestaurants': -1
-        }
-      }
-    ])
+      ])
+      // console.log("cityCount", cityCount)
+      return cityCount
+    }
+
+    
 
     // const filteredBoxRestaurants = await db.Restaurant.find({
     //   $and: [
@@ -100,7 +116,7 @@ router.get("/TopThreeCitiesNearMe", async (req, res) => {
     // })
 
 
-    res.status(200).json(cityCount)
+    res.status(200).json(gotRestArr)
   } catch (error) {
     res.status(400).json(error)
   }

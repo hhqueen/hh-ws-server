@@ -4,6 +4,10 @@ const mailchimp = require('../../services/mailChimp')
 const { boxCoordsFromlatLong, isCoordsInBox, miToKm } = require('../../functions/geoDistance')
 const { ObjectId } = require('mongodb')
 
+const geolib = require('geolib');
+
+const {forwardSearchByTerm} = require('../../services/positionStack')
+
 router.get("/", async (req, res) => {
   try {
     const allData = await db.APILog.find()
@@ -49,23 +53,23 @@ router.get("/RestaurantsPerCity", async (req, res) => {
 router.get("/TopThreeCitiesNearMe", async (req, res) => {
   try {
     let message = 'TopThreeCitiesNearMe route'
-    const coords = {
+    const centerCoords = {
       latitude: Number(req.query.latitude),
       longitude: Number(req.query.longitude)
     }
     
     const distanceSteps = [1, 3, 5, 10 ,15, 20]
-        
+    const minNumOfCities = 3    
     let gotRestArr = []
     for(let i = 0;i < distanceSteps.length; i++ ){
       gotRestArr = await getRestaurants(distanceSteps[i])
-      if (gotRestArr.length > 3) {
+      if (gotRestArr.length > minNumOfCities) {
         break;
       }
     }
 
     async function getRestaurants(distance) {
-      const { posLat, negLat, posLong, negLong } = boxCoordsFromlatLong(coords, miToKm(Number(distance)) * 1000)
+      const { posLat, negLat, posLong, negLong } = boxCoordsFromlatLong(centerCoords, miToKm(Number(distance)) * 1000)
 
       const cityCount = await db.Restaurant.aggregate([
         {
@@ -86,37 +90,48 @@ router.get("/TopThreeCitiesNearMe", async (req, res) => {
               '$count': {}
             }
           }
-        }, {
-          '$sort': {
-            'numRestaurants': -1
-          }
-        }
+        }, 
+        // {
+        //   '$sort': {
+        //     'numRestaurants': -1
+        //   }
+        // }
       ])
       // console.log("cityCount", cityCount)
       return cityCount
     }
 
-    
+    let restDataRespArr = []
 
-    // const filteredBoxRestaurants = await db.Restaurant.find({
-    //   $and: [
-    //     { longitude: { $gt: negLong, $lt: posLong } },
-    //     { latitude: { $gt: negLat, $lt: posLat } }
-    //   ],
-    //   isActive: true
-    // })//.populate([{ path: "hourSet" }, { path: "filterParams" }])
-    // let listOfRestIdsArr = filteredBoxRestaurants.map((rest) => ObjectId(rest._id))
+    await Promise.all(gotRestArr.map(async (item)=>{
+      try {
+        const {city, state} = item._id
+        const geoForwardCityResp = await forwardSearchByTerm(`${city}, ${state}`)
+        // console.log("geoForwardCityResp", geoForwardCityResp)
+        const {latitude, longitude} = geoForwardCityResp[0]
+        const cityCoords = {
+          "latitude": latitude,
+          "longitude":longitude
+        }
+        item.coordinates = cityCoords
+        item.distanceFromCL = geolib.getDistance(cityCoords, centerCoords)
+        console.log(item)
+        restDataRespArr.push(item)
+      } catch (error) {
+        console.log(error)
+      }
+    }))
 
-    // const restDataMap = new Map()
-    // filteredBoxRestaurants.forEach(rest => {
-    //   const getCity = restDataMap.get(rest.city)
-    //   if (getCity === undefined) {
-    //     restDataMap.set(rest.city, 1)
-    //   }
-    // })
+    restDataRespArr.sort((a, b) => {
+      if (a.distanceFromCL < b.distanceFromCL) return -1
+      if (a.distanceFromCL > b.distanceFromCL) return 1
+      return 0
+  })
+
+    console.log("restDataRespArr", restDataRespArr)
 
 
-    res.status(200).json(gotRestArr)
+    res.status(200).json(restDataRespArr)
   } catch (error) {
     res.status(400).json(error)
   }

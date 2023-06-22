@@ -24,7 +24,11 @@ module.exports = {
 	Image: require('./image'),
 	Hour: require('./hour'),
 	Location: require('./location'),
-	APILog: require('./apiLog'),
-	ActivityLog: require('./activityLog'),
-	PageVisit: require("./pageVisits")
+
+	// depreciated for pagevisit/visitor activity
+	APILog: require('./apiLog'), 
+	ActivityLog: require('./activityLog'), 
+	
+	PageVisit: require("./pageVisits"),
+	VisitorActivity: require('./vistorActivity')
 }

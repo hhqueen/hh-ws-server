@@ -3,6 +3,7 @@ const geolib = require('geolib');
 
 const kmPerMile = 1.60934
 
+// private functions
 const kmToMi = (num) =>{
     if (!isNumber(num)) return Error(`incorrect type, expecting number`)
     return num / kmPerMile

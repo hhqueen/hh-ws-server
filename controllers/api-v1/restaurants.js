@@ -11,21 +11,41 @@ const { activityLogger, activityLogTemplate } = require('../../functions/activit
 router.get("/", async (req, res) => {
     try {
         console.log("restRoute_ReqQuery", req.query)
-        
+
         const searchRadius = {
             distance: Number(req.query.distance),
             UOM: req.query.UOM
         }
 
         let distanceMeters
-        if(searchRadius.UOM = "mi") { distanceMeters = miToKm(searchRadius.distance) * 1000 }
+        if (searchRadius.UOM = "mi") { distanceMeters = miToKm(searchRadius.distance) * 1000 }
 
         const coordinates = {
             latitude: Number(req.query.currentLatitude),
             longitude: Number(req.query.currentLongitude)
         }
 
-       const newDeciCoords = boxCoordsFromlatLong(coordinates, distanceMeters)
+        const { gmapBoxState, searchOnMapMove } = req.query
+        console.log("searchOnMapMove", searchOnMapMove)
+        let newDeciCoords = {}
+        if (searchOnMapMove == 'false') {
+            console.log("using center and radius")
+            newDeciCoords = boxCoordsFromlatLong(coordinates, distanceMeters)
+        } else if (searchOnMapMove == 'true') {
+            console.log("using gmap bounds")
+            const parsedGmapBoxState = JSON.parse(gmapBoxState)
+            console.log("parsedGmapBoxState", parsedGmapBoxState)
+            const { north, south, east, west } = parsedGmapBoxState
+            newDeciCoords = {
+                posLong: Number(east),
+                posLat: Number(north),
+                negLong: Number(west),
+                negLat: Number(south)
+            }
+        }
+
+        console.log("newDeciCoords", newDeciCoords)
+
 
         // get all restaurants
         const allRests = await db.Restaurant.find({
@@ -41,19 +61,24 @@ router.get("/", async (req, res) => {
         }).populate([{ path: "hourSet" }, { path: "filterParams" }])
 
 
-        // console.log("allRests:", allRests)
-        const presortedArray = []
+        console.log("allRests:", allRests)
+        let presortedArray = []
         geoLib_getDistanceAccuracyOption = 1
 
-        allRests.forEach((item) => {
-            const distance = geolib.getDistance( coordinates,{ latitude: item.latitude, longitude: item.longitude })
-            if (distance <= distanceMeters) {
-                presortedArray.push({
-                    _id: item._id,
-                    distance
-                })
-            }
-        })
+        if (searchOnMapMove == 'false') {
+            allRests.forEach((item) => {
+                const distance = geolib.getDistance(coordinates, { latitude: item.latitude, longitude: item.longitude })
+                if (distance <= distanceMeters) {
+                    presortedArray.push({
+                        _id: item._id,
+                        distance
+                    })
+                }
+            })
+        } else if (searchOnMapMove == 'true'){
+            presortedArray = allRests
+        }
+
         // console.log("presortedArray:",presortedArray)
         // console.log("allRests Length",allRests)
         const sortedArray = presortedArray.sort((a, b) => {
@@ -70,7 +95,7 @@ router.get("/", async (req, res) => {
         })
         // console.log("sortedAllRests:",sortedAllRests)
         activityLogger({
-            DB_query_result:sortedAllRests,
+            DB_query_result: sortedAllRests,
             apiCall: req.createdApiCall
         })
         res.status(200).json(sortedAllRests)
@@ -127,7 +152,7 @@ router.get("/page/:id", async (req, res) => {
                 ])
         // console.log("oneRestById:", oneRest)
         activityLogger({
-            DB_query_result:oneRest,
+            DB_query_result: oneRest,
             apiCall: req.createdApiCall
         })
         res.status(200).json(oneRest)
@@ -209,7 +234,7 @@ router.post("/refreshYelpCuisines/:id", async (req, res) => {
 
 })
 
-router.get("/totalNumber", async (req,res)=>{
+router.get("/totalNumber", async (req, res) => {
     try {
         const totalNum = await db.Restaurant.count({})
         res.status(200).send(totalNum)

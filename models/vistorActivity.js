@@ -8,15 +8,23 @@ const VisitorActivitySchema = new mongoose.Schema(
 			ref: "User",
             default: null
 		},
+		restarauntId:{
+            type: mongoose.Schema.Types.ObjectId,
+			ref: "Restaurant",
+            default: null
+		},
         elementId:{
 			type: String,
+			default: null
 		},
-        elementType: {
-            type: String,
-        },
-		emailSubbed:{
-			type: Boolean,
+		value:{
+			type: String,
+			default: null
 		},
+		message: {
+			type: String,
+			default: null
+		}
 	},
 	{
 		timestamps: true,

@@ -213,6 +213,7 @@ router.get("/registeredProfiles", async (req, res) => {
         '$project': {
           'email': 1,
           'isActive': 1,
+          'emailSubbed': 1,
           'createdAt': 1
         }
       }

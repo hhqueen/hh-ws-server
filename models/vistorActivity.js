@@ -17,8 +17,12 @@ const VisitorActivitySchema = new mongoose.Schema(
 			type: String,
 			default: null
 		},
+		mobile:{
+			type: Boolean,
+			default: null
+		},
 		value:{
-			type: String,
+			type: Object,
 			default: null
 		},
 		url: {

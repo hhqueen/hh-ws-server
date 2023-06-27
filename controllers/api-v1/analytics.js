@@ -141,11 +141,13 @@ router.get("/RestaurantVisits", async (req, res) => {
   try {
     // let listOfRestIdsArr = filteredBoxRestaurants.map((rest) => ObjectId(rest._id))
     let vistedData = await db.PageVisit.aggregate([
-      // {
-      //   $match: {
-      //     RestaurantId: { $in: filteredBoxRestaurants.map((rest) => ObjectId(rest._id)) }
-      //   }
-      // },
+      {
+        $match: {
+          endPointURL: {
+            $regex: 'https://hhqueen.com.*'
+          }
+        }
+      },
       {
         $group: {
           _id: "$RestaurantId",
@@ -190,24 +192,13 @@ router.get("/totalNumberOfRestaurants", async (req, res) => {
 router.get("/dailyVistors", async (req, res) => {
   try {
     console.log("dailyVistors EndPoint Hit")
-    const vistors = await db.APILog.aggregate([
-      {
-        '$project': {
-          modifiedBy: 1,
-          ipAddress: 1,
-          reqQuery: 1,
-          createdAt: 1,
-          executed_date: 1,
-          endPointURL: 1
-        }
-      }
-    ])
+    const pageVisits = await db.PageVisit.find({endPointURL: {$regex: "https://hhqueen.com.*"} })
     // console.log("vistors:",typeof vistors)
     // console.log("vistors:",vistors)
 
-    const filteredVistors = vistors.filter(i => i.endPointURL !== null && i.endPointURL.indexOf("developement") === -1)
-    console.log("filteredVistors:", filteredVistors)
-    res.status(200).send(filteredVistors)
+    // const filteredVistors = vistors.filter(i => i.endPointURL !== null && i.endPointURL.indexOf("developement") === -1)
+    // console.log("filteredVistors:", filteredVistors)
+    res.status(200).json(pageVisits)
   } catch (error) {
     console.log("/dailyVistors_error", error)
     res.status(400).json(error)

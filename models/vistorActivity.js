@@ -8,7 +8,7 @@ const VisitorActivitySchema = new mongoose.Schema(
 			ref: "User",
             default: null
 		},
-		restarauntId:{
+		restaurantId:{
             type: mongoose.Schema.Types.ObjectId,
 			ref: "Restaurant",
             default: null
@@ -18,6 +18,10 @@ const VisitorActivitySchema = new mongoose.Schema(
 			default: null
 		},
 		value:{
+			type: String,
+			default: null
+		},
+		url: {
 			type: String,
 			default: null
 		},

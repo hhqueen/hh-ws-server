@@ -228,16 +228,16 @@ router.get("/emailSubs", async (req, res) => {
   try {
     const getMembers = await mailchimp.GetListInfo()
     const data = getMembers.members
-    let reducedData = []
-    data.forEach((dataItem) => {
-      reducedData.push({
-        email_address: dataItem.email_address,
-        timestamp_opt: dataItem.timestamp_opt,
-        ip_opt: dataItem.ip_opt,
-        status: dataItem.status
-      })
-    })
-    res.status(200).send(getMembers.members)
+    // let reducedData = []
+    // data.forEach((dataItem) => {
+    //   reducedData.push({
+    //     email_address: dataItem.email_address,
+    //     timestamp_opt: dataItem.timestamp_opt,
+    //     ip_opt: dataItem.ip_opt,
+    //     status: dataItem.status
+    //   })
+    // })
+    res.status(200).send(data)
   } catch (error) {
     res.status(400).json(error)
   }

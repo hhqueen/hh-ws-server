@@ -15,34 +15,23 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
     try {
-        // console.log("reqQuery", req.query)
-        // const message = "post visitorActivity"
-        // const {
-        //     userId, 
-        //     restaurantId, 
-        //     elementId, 
-        //     value, 
-        //     message, 
-        //     url
-        // } = req.body
-        // console.log("reqQuery", reqBody)
-        // // console.log(message)
-        // console.log
-        // const foundUser = await db.User.findById(userId)
+        console.log("reqQuery", req.query)
+        console.log("reqBody", req.body)
+
         const isMobile = (uadStr) => {
 			return uadStr.indexOf("Mobile") != -1
 		}
         const newPageVisit = await db.PageVisit.create({
             ipAddress: RequestIp.getClientIp(req),
-            OS: req.query.OS ?? null,
-            Mobile: isMobile(req.query.uad),
-            Browser: req.query.browser ?? null,
-            uad: req.query.uad ?? null,
-            screenWidth: Number(req.query.screenWidth),
-            ScreenHeight: Number(req.query.screenHeight),
-            UserId: (userId !== null && userId !== "null") ? await db.Restaurant.findById(req.query.restaurantId) : null,
-            RestaurantId: null,
-            endPointURL: req.get('origin') + req.originalUrl
+            OS: req.body.OS ?? null,
+            Mobile: isMobile(req.body.uad),
+            Browser: req.body.browser ?? null,
+            uad: req.body.uad ?? null,
+            screenWidth: Number(req.body.screenWidth),
+            ScreenHeight: Number(req.body.screenHeight),
+            endPointURL: req.body.url,
+            RestaurantId: (req.body.restaurantId !== null && req.body.restaurantId !== "null") ? await db.Restaurant.findById(req.body.restaurantId) : null,
+            UserId: (req.body.userId !== null && req.body.userId !== "null") ? await db.User.findById(req.body.userId) : null,
         })
         res.status(200).json(newPageVisit)
     } catch (error) {

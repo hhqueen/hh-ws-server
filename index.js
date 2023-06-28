@@ -13,18 +13,18 @@ app.use(express.json()) //json req.bodies
 // static upload folder for images
 app.use(express.static("uploads"))
 
-async function expressMiddleware(req, res, next) {  
+async function expressMiddleware(req, res, next) {
 	// console.log("middlewareReq:", req)
 	// console.log("findme!", req.get('origin'))
 	// console.log("middlewareReqBody:", req.body)
 	// console.log("middlewareReqQuery:", req.query)
 	let reqBody_hidePassword = {
-		hasPassword: false, 
+		hasPassword: false,
 		reqbody: {}
 	}
-	if(req.body.password) {
+	if (req.body.password) {
 		reqBody_hidePassword.hasPassword = true
-		reqBody_hidePassword.reqbody = Object.assign({},req.body)
+		reqBody_hidePassword.reqbody = Object.assign({}, req.body)
 		reqBody_hidePassword.reqbody.password = "***********"
 	}
 
@@ -44,8 +44,7 @@ async function expressMiddleware(req, res, next) {
 			foundUser = null
 		}
 		const originUrl = req.get('origin') + req.originalUrl
-		// console.log("foundUser:", foundUser)
-		console.log()
+
 		newAPI_Record = await db.APILog.create({
 			modifiedBy: foundUser,
 			ipAddress: RequestIp.getClientIp(req),
@@ -60,37 +59,8 @@ async function expressMiddleware(req, res, next) {
 			httpMethod: req.method,
 			endPointURL: originUrl
 		})
-		const isUserVisit = (req.query.mobile && req.query.OS && req.query.restaurantId)
-		console.log("originUrl:", originUrl)
-		console.log("reqQuery:",req.query)
-		
-		const isMobile = (uadStr)=> {
-			return 	uadStr.indexOf("Mobile") != -1 
-		}
 
-		// console.log("windowNav:", JSON.parse(req.query.windowNav))
-		if(originUrl.includes("/restaurants/page") 
-		// && !originUrl.includes("development.hhqueen")
-		) {
-			try {
-				newPageVist = await db.PageVisit.create({
-					ipAddress: RequestIp.getClientIp(req),
-					OS:req.query.OS ?? null,
-					Mobile: isMobile(req.query.uad),
-					Browser: req.query.browser ?? null,
-					uad: req.query.uad ?? null,
-					screenWidth: Number(req.query.screenWidth),
-					ScreenHeight: Number(req.query.screenHeight),
-					UserId: foundUser,
-					RestaurantId: await db.Restaurant.findById(req.query.restaurantId),
-					endPointURL: originUrl
-				})
-			} catch (error) {
-				console.log(error)
-			}
-		}
 
-		console.log("newAPI_Record:", newAPI_Record)
 	} catch (error) {
 		console.log(error)
 	} finally {
@@ -100,12 +70,12 @@ async function expressMiddleware(req, res, next) {
 }
 
 
-app.use(expressMiddleware)  
-app.use((req,res, next)=>{
-	onFinished(res,async(err)=>{
+app.use(expressMiddleware)
+app.use((req, res, next) => {
+	onFinished(res, async (err) => {
 		// console.log("onFinishedRes:",res.statusCode)
 		// console.log("onFinishedErr:",err)
-	})	
+	})
 	next()
 })
 app.get("/", (req, res) => {
@@ -120,6 +90,7 @@ app.use("/locations", require("./controllers/api-v1/locations"))
 app.use("/apiLogs", require('./controllers/api-v1/apiLogs'))
 app.use("/analytics", require('./controllers/api-v1/analytics'))
 app.use("/visitorActivity", require("./controllers/api-v1/visitorActivity"))
+app.use("/pageVisit", require("./controllers/api-v1/pageVisit"))
 
 app.listen(PORT, () => {
 	console.log(`Vegeta: ITS OVER (PORT)${PORT}!?!?`)

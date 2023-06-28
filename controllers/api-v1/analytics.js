@@ -144,7 +144,7 @@ router.get("/RestaurantVisits", async (req, res) => {
       {
         $match: {
           endPointURL: {
-            $regex: 'https://hhqueen.com.*'
+            $regex: 'https://hhqueen.com/restaurant/.*'
           }
         }
       },
